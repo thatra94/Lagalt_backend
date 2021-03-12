@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Lagalt.Models;
 
 namespace Lagalt.DB
 {
@@ -12,5 +13,6 @@ namespace Lagalt.DB
         {
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder) { }
+        public DbSet<Lagalt.Models.User> User { get; set; }
     }
 }
