@@ -12,7 +12,11 @@ namespace Lagalt.DB
         public LegaltContext(DbContextOptions<LegaltContext> options) : base(options)
         {
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder) { }
+
         public DbSet<Lagalt.Models.User> User { get; set; }
+        public DbSet<Project> Projects { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) { }
+
     }
 }

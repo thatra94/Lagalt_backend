@@ -12,47 +12,47 @@ namespace Lagalt.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class ProjectsController : ControllerBase
     {
         private readonly LegaltContext _context;
 
-        public UsersController(LegaltContext context)
+        public ProjectsController(LegaltContext context)
         {
             _context = context;
         }
 
-        // GET: api/Users
+        // GET: api/Projects
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
         {
-            return await _context.User.ToListAsync();
+            return await _context.Projects.ToListAsync();
         }
 
-        // GET: api/Users/5
+        // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<Project>> GetProject(int id)
         {
-            var user = await _context.User.FindAsync(id);
+            var project = await _context.Projects.FindAsync(id);
 
-            if (user == null)
+            if (project == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return project;
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Projects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutProject(int id, Project project)
         {
-            if (id != user.Id)
+            if (id != project.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(project).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace Lagalt.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!ProjectExists(id))
                 {
                     return NotFound();
                 }
@@ -73,36 +73,36 @@ namespace Lagalt.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
+        // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<Project>> PostProject(Project project)
         {
-            _context.User.Add(user);
+            _context.Projects.Add(project);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("GetProject", new { id = project.Id }, project);
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Projects/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteProject(int id)
         {
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
+            var project = await _context.Projects.FindAsync(id);
+            if (project == null)
             {
                 return NotFound();
             }
 
-            _context.User.Remove(user);
+            _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool UserExists(int id)
+        private bool ProjectExists(int id)
         {
-            return _context.User.Any(e => e.Id == id);
+            return _context.Projects.Any(e => e.Id == id);
         }
     }
 }
