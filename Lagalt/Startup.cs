@@ -29,7 +29,7 @@ namespace Lagalt
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));
-            services.AddDbContext<LegaltContext>(options =>
+            services.AddDbContext<LagaltContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
             services.AddSwaggerGen(c =>
