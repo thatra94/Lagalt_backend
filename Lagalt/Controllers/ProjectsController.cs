@@ -97,7 +97,7 @@ namespace Lagalt.Controllers
         // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CommonResponse<Project>>> PostProject(ProjectDto project)
+        public async Task<ActionResult<CommonResponse<ProjectDto>>> PostProject(ProjectCreateDto project)
         {
             CommonResponse<ProjectDto> response = new CommonResponse<ProjectDto>();
 
@@ -128,7 +128,7 @@ namespace Lagalt.Controllers
             response.Data = _mapper.Map<ProjectDto>(projectModel);
 
 
-            return CreatedAtAction("GetProject", new { id = project.Id }, response);
+            return CreatedAtAction("GetProject", new { id = response.Data.Id }, response);
         }
 
         // DELETE: api/Projects/5

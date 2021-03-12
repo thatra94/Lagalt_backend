@@ -13,6 +13,7 @@ namespace Lagalt.Profiles
         public ProjectProfile()
         {
             CreateMap<ProjectDto, Project>().ReverseMap();
+            CreateMap<ProjectCreateDto, Project>().ReverseMap();
             CreateMap<ProjectMainDto, Project>().ReverseMap();
         }
     }
