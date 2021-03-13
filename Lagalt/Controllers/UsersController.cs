@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Lagalt.DB;
 using Lagalt.Models;
+using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
+using Lagalt.ResponseModel;
+using Lagalt.DTOs;
 
 namespace Lagalt.Controllers
 {
@@ -15,12 +19,15 @@ namespace Lagalt.Controllers
     public class UsersController : ControllerBase
     {
         private readonly LagaltContext _context;
+        private readonly IMapper _mapper;
 
-        public UsersController(LagaltContext context)
+        public UsersController(LagaltContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
+        [Authorize]
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
@@ -103,6 +110,29 @@ namespace Lagalt.Controllers
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+
+        //Get skills for user
+
+        //Get Characters in Movie 
+        [HttpGet("{id}/Skills")]
+        public async Task<ActionResult<CommonResponse<SkillDto>>> GetSkillsInUser(int id)
+        {
+            // Make response object
+            CommonResponse<IEnumerable<SkillDto>> respons = new CommonResponse<IEnumerable<SkillDto>>();
+            User user = await _context.Users.Include(s => s.Skills).Where(u => u.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                respons.Error = new Error { Status = 404, Message = "An user with that id could not be found." };
+                return NotFound(respons);
+            }
+            foreach (Skill skill in user.Skills)
+            {
+                skill.Users = null;
+            }
+            // Map to dto
+            respons.Data = _mapper.Map<List<SkillDto>>(user.Skills);
+            return Ok(respons);
         }
     }
 }

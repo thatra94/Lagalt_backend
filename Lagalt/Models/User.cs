@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lagalt.Models
 {
@@ -24,7 +22,8 @@ namespace Lagalt.Models
         public string Description { get; set; }
 
         //Relationship
-        public ICollection<Skill> skills;
+        public ICollection<Skill> Skills { get; set; }
+        public ICollection<Project> Projects { get; set; }
 
     }
 }
