@@ -113,8 +113,6 @@ namespace Lagalt.Controllers
         }
 
         //Get skills for user
-
-        //Get Characters in Movie 
         [HttpGet("{id}/Skills")]
         public async Task<ActionResult<CommonResponse<SkillDto>>> GetSkillsInUser(int id)
         {

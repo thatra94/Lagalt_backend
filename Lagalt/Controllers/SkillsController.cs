@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Lagalt.DB;
 using Lagalt.Models;
 using AutoMapper;
+using Lagalt.DTOs;
+using Lagalt.ResponseModel;
 
 namespace Lagalt.Controllers
 {
@@ -76,15 +78,36 @@ namespace Lagalt.Controllers
             return NoContent();
         }
 
-        // POST: api/Skills
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/Skill
         [HttpPost]
-        public async Task<ActionResult<Skill>> PostSkill(Skill skill)
+        public async Task<ActionResult<CommonResponse<SkillDto>>> PostSkill(SkillPostDto skill)
         {
-            _context.Skill.Add(skill);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetSkill", new { id = skill.Id }, skill);
+            // Create response object
+            CommonResponse<SkillDto> respons = new CommonResponse<SkillDto>();
+            if (!ModelState.IsValid)
+            {
+                respons.Error = new Error
+                {
+                    Status = 400,
+                    Message = "The skill did not pass validation, ensure it is in the correct format."
+                };
+                return BadRequest(respons);
+            }
+            Skill skillModel = _mapper.Map<Skill>(skill);
+            // Try catch
+            try
+            {
+                _context.Skill.Add(skillModel);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                respons.Error = new Error { Status = 500, Message = e.Message };
+                return StatusCode(StatusCodes.Status500InternalServerError, respons);
+            }
+            // Map to dto 
+            respons.Data = _mapper.Map<SkillDto>(skillModel);
+            return CreatedAtAction("GetSkill", new { id = respons.Data.Id }, respons);
         }
 
         // DELETE: api/Skills/5
