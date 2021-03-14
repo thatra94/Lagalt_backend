@@ -156,17 +156,37 @@ namespace Lagalt.Controllers
 
         // GET: api/Projects
         // Get project information for main view
+        /*
         [HttpGet("main")]
         public async Task<ActionResult<CommonResponse<IEnumerable<ProjectMainDto>>>> GetProjectsMain()
-        {
+        { 
             CommonResponse<IEnumerable<ProjectMainDto>> response = new CommonResponse<IEnumerable<ProjectMainDto>>();
-            // Maps from model to Dto
-            var modelProject = await _context.Projects.ToListAsync();
-            List<ProjectMainDto> projects = _mapper.Map<List<ProjectMainDto>>(modelProject);
-            // Return data
-            response.Data = projects;
 
+            var projectModel = await _context.Projects.ToListAsync();
+            //var projectModel = await _context.Projects.ToListAsync();
+
+            List<ProjectMainDto> projects = _mapper.Map<List<ProjectMainDto>>(projectModel);
+
+            response.Data = projects;
             return Ok(response);
+        } */
+
+        // GET api/projects/main
+        // Get project information for main view
+        [HttpGet("main")]
+        public IQueryable<ProjectMainDto> GetProjectsMain()
+        {
+            var projects = from p in _context.Projects
+                        select new ProjectMainDto()
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            ImageUrl = p.ImageUrl,
+                            Status = p.Status,
+                            IndustryName = p.Industry.Name
+                        };
+
+            return projects;
         }
 
     }

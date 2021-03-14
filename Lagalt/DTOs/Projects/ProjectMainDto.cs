@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Lagalt.DTOs.Industries;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace Lagalt.DTOs
 {
@@ -13,7 +12,8 @@ namespace Lagalt.DTOs
         public string Name { get; set; }
         public string ImageUrl { get; set; }
         public string Status { get; set; }
-        // Industry name
-        public int IndustryId { get; set; }
+        // Industry field
+        public string IndustryName { get; set; }
+ 
     }
 }

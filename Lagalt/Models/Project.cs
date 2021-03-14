@@ -23,7 +23,7 @@ namespace Lagalt.Models
         [MaxLength(20)]
         public string  Status { get; set; }  // ("Founding", "In progress", "Stalled", and "Completed")
         // Relationships
-        public Industry industry { get; set; }
+        public Industry Industry { get; set; }
         public int IndustryId { get; set; }
     }
 }

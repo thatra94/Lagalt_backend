@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Lagalt.DTOs.Industry
+namespace Lagalt.DTOs.Industries
 {
     public class IndustryCreateDto
     {

@@ -127,10 +127,3 @@ namespace Lagalt.DB
  
     }
 }
-
-
-/*
-Id, Name, Description, ImageUrl, Status  // ("Founding", "In progress", "Stalled", and "Completed"), IndustryId 
-                                             "Opprettet", "Under utvikling", "Stoppet", "Ferdig"
-*/
-

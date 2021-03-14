@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Lagalt.DTOs.Industry;
+using Lagalt.DTOs.Industries;
 using Lagalt.Models;
 
 namespace Lagalt.Profiles

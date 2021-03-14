@@ -1,5 +1,5 @@
 ﻿
-namespace Lagalt.DTOs.Industry
+namespace Lagalt.DTOs.Industries
 {
     public class IndustryDto
     {

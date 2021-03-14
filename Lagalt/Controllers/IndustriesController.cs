@@ -9,7 +9,7 @@ using Lagalt.DB;
 using Lagalt.Models;
 using AutoMapper;
 using Lagalt.ResponseModel;
-using Lagalt.DTOs.Industry;
+using Lagalt.DTOs.Industries;
 
 namespace Lagalt.Controllers
 {
