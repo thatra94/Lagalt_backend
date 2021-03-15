@@ -31,9 +31,47 @@ namespace Lagalt.DB
                 Description = "Hei, jeg heter Alias. Jeg liker Bøker "},
                 new User{ Id = 2, Name = "Another User", UserToken = "another-token", ImageUrl = "https://www.shankarainfra.com/img/avatar.png",
                     Description = "Gamer til tusen"
+                },
+                new User{ Id = 3, Name = "Marius Jansen", UserToken = "another-token", ImageUrl = "https://www.shankarainfra.com/img/avatar.png",
+                    Description = "Gått på skole i mange år, liker å dra på konsert noen ganger"
                 }
             };
             return users;
+        }
+
+        public static ICollection<ProjectApplication> SeedProjectApplication()
+        {
+            ICollection<ProjectApplication> proApplication = new List<ProjectApplication>()
+            {
+                new ProjectApplication
+                {
+                    Id = 1,
+                    ProjectId = 1,
+                    UserId = 1,
+                    Role = "user",
+                    MotivationText = "Jeg vil gjerne være med på prosjektet fordi jeg er god",
+                    Status = "Pending"
+                },
+                new ProjectApplication
+                {
+                    Id = 2,
+                    ProjectId = 4,
+                    UserId = 3,
+                    Role = "user",
+                    MotivationText = "Dette er noe for meg, jeg liker sporingssystemer",
+                    Status = "Approved"
+                },
+                new ProjectApplication
+                {
+                    Id = 3,
+                    ProjectId = 2,
+                    UserId = 3,
+                    Role = "user",
+                    MotivationText = "Har lyst til å være med",
+                    Status = "Declined"
+                }
+            };
+            return proApplication;
         }
     }
 }

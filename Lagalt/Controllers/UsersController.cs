@@ -27,12 +27,18 @@ namespace Lagalt.Controllers
             _mapper = mapper;
         }
 
-        [Authorize]
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<CommonResponse<IEnumerable<UserDto>>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            // Create response object
+            CommonResponse<IEnumerable<UserDto>> respons = new CommonResponse<IEnumerable<UserDto>>();
+            // Fetch list of model class and map to dto
+            var modelUser = await _context.Users.ToListAsync();
+            List<UserDto> users = _mapper.Map<List<UserDto>>(modelUser);
+            // Return the data
+            respons.Data = users;
+            return Ok(respons);
         }
 
         // GET: api/User/5
@@ -134,6 +140,27 @@ namespace Lagalt.Controllers
             }
             // Map to dto
             respons.Data = _mapper.Map<List<SkillDto>>(user.Skills);
+            return Ok(respons);
+        }
+
+        //Get skills for user
+        [HttpGet("{id}/Projects")]
+        public async Task<ActionResult<CommonResponse<ProjectMainDto>>> GetProjectForUser(int id)
+        {
+            // Make response object
+            CommonResponse<IEnumerable<ProjectMainDto>> respons = new CommonResponse<IEnumerable<ProjectMainDto>>();
+            User user = await _context.Users.Include(p => p.Projects).Where(u => u.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                respons.Error = new Error { Status = 404, Message = "An user with that id could not be found." };
+                return NotFound(respons);
+            }
+            foreach (Project project in user.Projects)
+            {
+                project.Users = null;
+            }
+            // Map to dto
+            respons.Data = _mapper.Map<List<ProjectMainDto>>(user.Projects);
             return Ok(respons);
         }
     }
