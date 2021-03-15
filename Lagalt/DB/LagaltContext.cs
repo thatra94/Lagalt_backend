@@ -18,7 +18,25 @@ namespace Lagalt.DB
         public DbSet<Industry> Industries { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<UserComment> UserComments { get; set; }
+        public DbSet<ProjectApplication> ProjectApplications { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) { }
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+            // Seed
+            modelBuilder.Entity<User>().HasData(Seeder.SeedUsers());
+            modelBuilder.Entity<Skill>().HasData(Seeder.SeedSkills());
+            modelBuilder.Entity<Project>().HasData(SeederHelper.SeedProjects());
+            modelBuilder.Entity<Industry>().HasData(SeederHelper.SeedIndustries());
+            modelBuilder.Entity<ProjectApplication>().HasData(Seeder.SeedProjectApplication());
+
+            //Relationship
+            modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 1, UsersId = 1 });
+            modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 2, UsersId = 1 });
+            modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 4, UsersId = 1 });
+            modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 5, UsersId = 2 });
+            modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 6, UsersId = 2 });
+            modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 1, UsersId = 2 });
+
+        }
     }
 }
