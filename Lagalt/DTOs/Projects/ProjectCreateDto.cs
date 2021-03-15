@@ -18,7 +18,7 @@ namespace Lagalt.DTOs
         public string ImageUrl { get; set; }
         [MaxLength(20)]
         public string Status { get; set; }
-        
-        // Id for industry
+        // Foreign key
+        public int IndustryId { get; set; }
     }
 }

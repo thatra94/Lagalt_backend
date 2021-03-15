@@ -25,5 +25,7 @@ namespace Lagalt.Models
         // Relationships
         public Industry Industry { get; set; }
         public int IndustryId { get; set; }
+        public ICollection<User> Users { get; set; }
+        public ICollection<UserComment> UserComments { get; set; }
     }
 }
