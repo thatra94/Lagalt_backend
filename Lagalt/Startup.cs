@@ -105,6 +105,8 @@ namespace Lagalt
 
             app.UseAuthorization();
 
+            app.UseCors(MyAllowSpecificOrigins);
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
