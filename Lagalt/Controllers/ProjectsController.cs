@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Lagalt.DB;
 using Lagalt.Models;
+using Lagalt.ResponseModel;
+using Lagalt.DTOs;
+using AutoMapper;
 
 namespace Lagalt.Controllers
 {
@@ -15,44 +18,62 @@ namespace Lagalt.Controllers
     public class ProjectsController : ControllerBase
     {
         private readonly LagaltContext _context;
+        private readonly IMapper _mapper;
 
-        public ProjectsController(LagaltContext context)
+        public ProjectsController(LagaltContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Projects
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
+        public async Task<ActionResult<CommonResponse<IEnumerable<ProjectDto>>>> GetProjects()
         {
-            return await _context.Projects.ToListAsync();
+            CommonResponse<IEnumerable<ProjectDto>> response = new CommonResponse<IEnumerable<ProjectDto>>();
+            // Maps from model to Dto
+            var modelProject = await _context.Projects.ToListAsync();
+            List<ProjectDto> projects = _mapper.Map<List<ProjectDto>>(modelProject);
+            // Return data
+            response.Data = projects;
+
+            return Ok(response);
         }
 
         // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Project>> GetProject(int id)
+        public async Task<ActionResult<CommonResponse<Project>>> GetProject(int id)
         {
-            var project = await _context.Projects.FindAsync(id);
+            CommonResponse<ProjectDto> response = new CommonResponse<ProjectDto>();
 
-            if (project == null)
+            var projectModel = await _context.Projects.FindAsync(id);
+
+            if (projectModel == null)
             {
-                return NotFound();
+                response.Error = new Error { Status = 404, Message = "Cannot find a project with that Id" };
+                return NotFound(response);
             }
+            // Maps to Dto
+            response.Data = _mapper.Map<ProjectDto>(projectModel);
 
-            return project;
+            return Ok(response);
         }
 
         // PUT: api/Projects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProject(int id, Project project)
+        public async Task<IActionResult> PutProject(int id, ProjectDto project)
         {
+            CommonResponse<ProjectDto> response = new CommonResponse<ProjectDto>();
+
             if (id != project.Id)
             {
-                return BadRequest();
+                response.Error = new Error { Status = 400, Message = "There was a mismatch with the provided id and the object." };
+                return BadRequest(response);
             }
-
-            _context.Entry(project).State = EntityState.Modified;
+            // Maps to project model
+            Project projectModel = _mapper.Map<Project>(project);
+            _context.Entry(projectModel).State = EntityState.Modified;
 
             try
             {
@@ -76,33 +97,97 @@ namespace Lagalt.Controllers
         // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Project>> PostProject(Project project)
+        public async Task<ActionResult<CommonResponse<ProjectDto>>> PostProject(ProjectCreateDto project)
         {
-            _context.Projects.Add(project);
-            await _context.SaveChangesAsync();
+            CommonResponse<ProjectDto> response = new CommonResponse<ProjectDto>();
 
-            return CreatedAtAction("GetProject", new { id = project.Id }, project);
+            if(!ModelState.IsValid)
+            {
+                response.Error = new Error
+                {
+                    Status = 400,
+                    Message = "Did not pass validation, ensure it is in the correct format."
+                };
+                return BadRequest(response);
+            }
+
+            Project projectModel = _mapper.Map<Project>(project);
+
+            try
+            {
+                _context.Projects.Add(projectModel);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+                response.Error = new Error { Status = 500, Message = e.Message };
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+
+            // Map to projectDto
+            response.Data = _mapper.Map<ProjectDto>(projectModel);
+
+
+            return CreatedAtAction("GetProject", new { id = response.Data.Id }, response);
         }
 
         // DELETE: api/Projects/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProject(int id)
+        public async Task<ActionResult<CommonResponse<ProjectDto>>> DeleteProject(int id)
         {
+            CommonResponse<ProjectDto> response = new CommonResponse<ProjectDto>();
+
             var project = await _context.Projects.FindAsync(id);
             if (project == null)
             {
-                return NotFound();
+                response.Error = new Error { Status = 404, Message = "A project with that id could not be found." };
+                return NotFound(response);
             }
 
-            _context.Projects.Remove(project);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            // Map to ProjectDto
+            response.Data = _mapper.Map<ProjectDto>(project);
+            return Ok(response);
         }
 
         private bool ProjectExists(int id)
         {
             return _context.Projects.Any(e => e.Id == id);
+        }
+        /*
+        [HttpGet("main")]
+        public IQueryable<ProjectMainDto> GetProjectsMain()
+        {
+            var projects = from p in _context.Projects
+                        select new ProjectMainDto()
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            ImageUrl = p.ImageUrl,
+                            Status = p.Status,
+                            IndustryName = p.Industry.Name
+                        };
+
+            return projects;
+        } */
+        [HttpGet("main")]
+        public ActionResult<CommonResponse<IQueryable<ProjectMainDto>>> GetProjectsMain()
+        {
+            CommonResponse<IQueryable<ProjectMainDto>> response = new CommonResponse<IQueryable<ProjectMainDto>>();
+       
+            var projects = from p in _context.Projects
+                           select new ProjectMainDto()
+                           {
+                               Id = p.Id,
+                               Name = p.Name,
+                               ImageUrl = p.ImageUrl,
+                               Status = p.Status,
+                               IndustryName = p.Industry.Name
+                           };
+
+            // Return data
+            response.Data = projects;
+
+            return Ok(response);
         }
     }
 }

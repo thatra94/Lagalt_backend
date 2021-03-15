@@ -4,14 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Lagalt.Models
+namespace Lagalt.DTOs
 {
-    public class Project
+    public class ProjectCreateDto
     {
-        // Primary key
-        public int Id { get; set; }
         // Fields
-        [Required]
         [MaxLength(200)]
         public string Name { get; set; }
         [MaxLength(500)]
@@ -19,11 +16,9 @@ namespace Lagalt.Models
         [DataType(DataType.ImageUrl)]
         [MaxLength(2083)]
         public string ImageUrl { get; set; }
-        [Required]
         [MaxLength(20)]
-        public string  Status { get; set; }  // ("Founding", "In progress", "Stalled", and "Completed")
-        // Relationships
-        public Industry Industry { get; set; }
-        public int IndustryId { get; set; }
+        public string Status { get; set; }
+        
+        // Id for industry
     }
 }

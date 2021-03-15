@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lagalt.Models
 {
@@ -9,6 +7,11 @@ namespace Lagalt.Models
     {
         // Primary Key
         public int Id { get; set; }
+        // Fields
+        [Required]
+        [MaxLength(200)]
         public string Name { get; set; }
+        // Relationships
+        public ICollection<Project> Projects { get; set; }
     }
 }
