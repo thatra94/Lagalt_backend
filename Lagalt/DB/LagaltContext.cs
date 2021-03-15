@@ -17,6 +17,7 @@ namespace Lagalt.DB
         public DbSet<Project> Projects { get; set; }
         public DbSet<Industry> Industries { get; set; }
         public DbSet<Skill> Skills { get; set; }
+        public DbSet<UserComment> UserComments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) { }
     }
