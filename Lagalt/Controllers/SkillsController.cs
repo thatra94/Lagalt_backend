@@ -30,14 +30,14 @@ namespace Lagalt.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Skill>>> GetSkill()
         {
-            return await _context.Skill.ToListAsync();
+            return await _context.Skills.ToListAsync();
         }
 
         // GET: api/Skills/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Skill>> GetSkill(int id)
         {
-            var skill = await _context.Skill.FindAsync(id);
+            var skill = await _context.Skills.FindAsync(id);
 
             if (skill == null)
             {
@@ -97,7 +97,7 @@ namespace Lagalt.Controllers
             // Try catch
             try
             {
-                _context.Skill.Add(skillModel);
+                _context.Skills.Add(skillModel);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
@@ -114,13 +114,13 @@ namespace Lagalt.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSkill(int id)
         {
-            var skill = await _context.Skill.FindAsync(id);
+            var skill = await _context.Skills.FindAsync(id);
             if (skill == null)
             {
                 return NotFound();
             }
 
-            _context.Skill.Remove(skill);
+            _context.Skills.Remove(skill);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -128,7 +128,7 @@ namespace Lagalt.Controllers
 
         private bool SkillExists(int id)
         {
-            return _context.Skill.Any(e => e.Id == id);
+            return _context.Skills.Any(e => e.Id == id);
         }
     }
 }
