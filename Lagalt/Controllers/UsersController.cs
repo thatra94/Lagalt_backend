@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Lagalt.DB;
 using Lagalt.Models;
+using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
+using Lagalt.ResponseModel;
+using Lagalt.DTOs;
 
 namespace Lagalt.Controllers
 {
@@ -15,12 +19,15 @@ namespace Lagalt.Controllers
     public class UsersController : ControllerBase
     {
         private readonly LagaltContext _context;
+        private readonly IMapper _mapper;
 
-        public UsersController(LagaltContext context)
+        public UsersController(LagaltContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
+        [Authorize]
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
@@ -28,18 +35,22 @@ namespace Lagalt.Controllers
             return await _context.Users.ToListAsync();
         }
 
-        // GET: api/Users/5
+        // GET: api/User/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<CommonResponse<UserDto>>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            // Create response object
+            CommonResponse<UserDto> respons = new CommonResponse<UserDto>();
+            var userModel = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync(u => u.Id == id);
 
-            if (user == null)
+            if (userModel == null)
             {
-                return NotFound();
+                respons.Error = new Error { Status = 404, Message = "Cannot find an user with that Id" };
+                return NotFound(respons);
             }
-
-            return user;
+            // Map 
+            respons.Data = _mapper.Map<UserDto>(userModel);
+            return Ok(respons);
         }
 
         // PUT: api/Users/5
@@ -103,6 +114,27 @@ namespace Lagalt.Controllers
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+
+        //Get skills for user
+        [HttpGet("{id}/Skills")]
+        public async Task<ActionResult<CommonResponse<SkillDto>>> GetSkillsInUser(int id)
+        {
+            // Make response object
+            CommonResponse<IEnumerable<SkillDto>> respons = new CommonResponse<IEnumerable<SkillDto>>();
+            User user = await _context.Users.Include(s => s.Skills).Where(u => u.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                respons.Error = new Error { Status = 404, Message = "An user with that id could not be found." };
+                return NotFound(respons);
+            }
+            foreach (Skill skill in user.Skills)
+            {
+                skill.Users = null;
+            }
+            // Map to dto
+            respons.Data = _mapper.Map<List<SkillDto>>(user.Skills);
+            return Ok(respons);
         }
     }
 }
