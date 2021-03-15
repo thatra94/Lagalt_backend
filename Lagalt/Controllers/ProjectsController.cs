@@ -153,26 +153,7 @@ namespace Lagalt.Controllers
         {
             return _context.Projects.Any(e => e.Id == id);
         }
-
-        // GET: api/Projects
-        // Get project information for main view
         /*
-        [HttpGet("main")]
-        public async Task<ActionResult<CommonResponse<IEnumerable<ProjectMainDto>>>> GetProjectsMain()
-        { 
-            CommonResponse<IEnumerable<ProjectMainDto>> response = new CommonResponse<IEnumerable<ProjectMainDto>>();
-
-            var projectModel = await _context.Projects.ToListAsync();
-            //var projectModel = await _context.Projects.ToListAsync();
-
-            List<ProjectMainDto> projects = _mapper.Map<List<ProjectMainDto>>(projectModel);
-
-            response.Data = projects;
-            return Ok(response);
-        } */
-
-        // GET api/projects/main
-        // Get project information for main view
         [HttpGet("main")]
         public IQueryable<ProjectMainDto> GetProjectsMain()
         {
@@ -187,7 +168,26 @@ namespace Lagalt.Controllers
                         };
 
             return projects;
-        }
+        } */
+        [HttpGet("main")]
+        public ActionResult<CommonResponse<IQueryable<ProjectMainDto>>> GetProjectsMain()
+        {
+            CommonResponse<IQueryable<ProjectMainDto>> response = new CommonResponse<IQueryable<ProjectMainDto>>();
+       
+            var projects = from p in _context.Projects
+                           select new ProjectMainDto()
+                           {
+                               Id = p.Id,
+                               Name = p.Name,
+                               ImageUrl = p.ImageUrl,
+                               Status = p.Status,
+                               IndustryName = p.Industry.Name
+                           };
 
+            // Return data
+            response.Data = projects;
+
+            return Ok(response);
+        }
     }
 }
