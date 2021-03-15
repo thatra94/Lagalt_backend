@@ -30,14 +30,14 @@ namespace Lagalt.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectApplication>>> GetProjectApplication()
         {
-            return await _context.ProjectApplication.ToListAsync();
+            return await _context.ProjectApplications.ToListAsync();
         }
 
         // GET: api/ProjectApplications/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectApplication>> GetProjectApplication(int id)
         {
-            var projectApplication = await _context.ProjectApplication.FindAsync(id);
+            var projectApplication = await _context.ProjectApplications.FindAsync(id);
 
             if (projectApplication == null)
             {
@@ -97,7 +97,7 @@ namespace Lagalt.Controllers
             // Try catch
             try
             {
-                _context.ProjectApplication.Add(projectAppModel);
+                _context.ProjectApplications.Add(projectAppModel);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
@@ -115,13 +115,13 @@ namespace Lagalt.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProjectApplication(int id)
         {
-            var projectApplication = await _context.ProjectApplication.FindAsync(id);
+            var projectApplication = await _context.ProjectApplications.FindAsync(id);
             if (projectApplication == null)
             {
                 return NotFound();
             }
 
-            _context.ProjectApplication.Remove(projectApplication);
+            _context.ProjectApplications.Remove(projectApplication);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -129,7 +129,7 @@ namespace Lagalt.Controllers
 
         private bool ProjectApplicationExists(int id)
         {
-            return _context.ProjectApplication.Any(e => e.Id == id);
+            return _context.ProjectApplications.Any(e => e.Id == id);
         }
     }
 }
