@@ -71,7 +71,7 @@ namespace Lagalt.Controllers
             }
 
             _context.Entry(user).State = EntityState.Modified;
-
+            
             try
             {
                 await _context.SaveChangesAsync();
@@ -91,28 +91,23 @@ namespace Lagalt.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/Movies
         [HttpPost]
         public async Task<ActionResult<CommonResponse<UserDto>>> PostUser(UserCreateDto user)
         {
-            // Make response object
-            CommonResponse<UserDto> resp = new CommonResponse<UserDto>();
-
-            // See if the author is valid
+            // Create response object
+            CommonResponse<UserDto> respons = new CommonResponse<UserDto>();
             if (!ModelState.IsValid)
             {
-                resp.Error = new Error
+                respons.Error = new Error
                 {
                     Status = 400,
                     Message = "The user did not pass validation, ensure it is in the correct format."
                 };
-                return BadRequest(resp);
+                return BadRequest(respons);
             }
-
             User userModel = _mapper.Map<User>(user);
-
-            // Try to add - if it fails here there is something wrong with the server
+            // Try catch
             try
             {
                 _context.Users.Add(userModel);
@@ -120,12 +115,12 @@ namespace Lagalt.Controllers
             }
             catch (Exception e)
             {
-                resp.Error = new Error { Status = 500, Message = e.Message };
-                return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                respons.Error = new Error { Status = 500, Message = e.Message };
+                return StatusCode(StatusCodes.Status500InternalServerError, respons);
             }
-            // Gets here if its a success
-            resp.Data = _mapper.Map<UserDto>(userModel);
-            return CreatedAtAction("GetUser", new { id = resp.Data.Id }, resp);
+            // Map to dto 
+            respons.Data = _mapper.Map<UserDto>(userModel);
+            return CreatedAtAction("GetUser", new { userId = respons.Data.UserId }, respons);
         }
 
         // DELETE: api/Users/5
@@ -169,6 +164,7 @@ namespace Lagalt.Controllers
             respons.Data = _mapper.Map<List<SkillDto>>(user.Skills);
             return Ok(respons);
         }
+
 
         //Get skills for user
         [HttpGet("{id}/Projects")]
