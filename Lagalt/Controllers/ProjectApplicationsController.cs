@@ -78,39 +78,6 @@ namespace Lagalt.Controllers
             return NoContent();
         }
 
-        // POST: api/Skill
-        [HttpPost]
-        public async Task<ActionResult<CommonResponse<ProjectApplicationDto>>> PostProjectApplication(ProjectApplicationUserDto applicationUser)
-        {
-            // Create response object
-            CommonResponse<ProjectApplicationDto> respons = new CommonResponse<ProjectApplicationDto>();
-            if (!ModelState.IsValid)
-            {
-                respons.Error = new Error
-                {
-                    Status = 400,
-                    Message = "The application did not pass validation, ensure it is in the correct format."
-                };
-                return BadRequest(respons);
-            }
-            ProjectApplication projectAppModel = _mapper.Map<ProjectApplication>(applicationUser);
-            // Try catch
-            try
-            {
-                _context.ProjectApplications.Add(projectAppModel);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                respons.Error = new Error { Status = 500, Message = e.Message };
-                return StatusCode(StatusCodes.Status500InternalServerError, respons);
-            }
-            // Map to dto 
-            respons.Data = _mapper.Map<ProjectApplicationDto>(applicationUser);
-            return CreatedAtAction("Get new userapplication", new { id = respons.Data.Id }, respons);
-        }
-
-
         // DELETE: api/ProjectApplications/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProjectApplication(int id)

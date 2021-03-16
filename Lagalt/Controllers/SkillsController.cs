@@ -25,40 +25,50 @@ namespace Lagalt.Controllers
             _context = context;
             _mapper = mapper;
         }
-
         // GET: api/Skills
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Skill>>> GetSkill()
+        public async Task<ActionResult<CommonResponse<IEnumerable<SkillDto>>>> GetSkills()
         {
-            return await _context.Skills.ToListAsync();
+            // Create response object
+            CommonResponse<IEnumerable<SkillDto>> respons = new CommonResponse<IEnumerable<SkillDto>>();
+            // Fetch list of model class and map to dto
+            var skillModel = await _context.Skills.ToListAsync();
+            List<SkillDto> skills = _mapper.Map<List<SkillDto>>(skillModel);
+            // Return the data
+            respons.Data = skills;
+            return Ok(respons);
         }
 
         // GET: api/Skills/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Skill>> GetSkill(int id)
+        public async Task<ActionResult<CommonResponse<SkillDto>>> GetSkill(int id)
         {
-            var skill = await _context.Skills.FindAsync(id);
-
-            if (skill == null)
+            // Create response object
+            CommonResponse<SkillDto> respons = new CommonResponse<SkillDto>();
+            var skillModel = await _context.Skills.FindAsync(id);
+            if (skillModel == null)
             {
-                return NotFound();
+                respons.Error = new Error { Status = 404, Message = "Cannot find an skill with that Id" };
+                return NotFound(respons);
             }
-
-            return skill;
+            // Map 
+            respons.Data = _mapper.Map<SkillDto>(skillModel);
+            return Ok(respons);
         }
 
         // PUT: api/Skills/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSkill(int id, Skill skill)
+        public async Task<IActionResult> PutSkill(int id, SkillDto skill)
         {
+            // Create response object
+            CommonResponse<SkillDto> respons = new CommonResponse<SkillDto>();
             if (id != skill.Id)
             {
-                return BadRequest();
+                respons.Error = new Error { Status = 400, Message = "There was a mismatch with the provided id and the object." };
+                return BadRequest(respons);
             }
-
-            _context.Entry(skill).State = EntityState.Modified;
-
+            _context.Entry(_mapper.Map<Skill>(skill)).State = EntityState.Modified;
             try
             {
                 await _context.SaveChangesAsync();
@@ -74,7 +84,6 @@ namespace Lagalt.Controllers
                     throw;
                 }
             }
-
             return NoContent();
         }
 
@@ -112,18 +121,23 @@ namespace Lagalt.Controllers
 
         // DELETE: api/Skills/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSkill(int id)
+        public async Task<ActionResult<CommonResponse<SkillDto>>> DeleteSkill(int id)
         {
+            // Make response object
+            CommonResponse<SkillDto> respons = new CommonResponse<SkillDto>();
+
             var skill = await _context.Skills.FindAsync(id);
             if (skill == null)
             {
-                return NotFound();
+                respons.Error = new Error { Status = 404, Message = "An skill with that id could not be found." };
+                return NotFound(respons);
             }
-
             _context.Skills.Remove(skill);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            // Map model class to dto 
+            respons.Data = _mapper.Map<SkillDto>(skill);
+            return Ok(respons);
         }
 
         private bool SkillExists(int id)
