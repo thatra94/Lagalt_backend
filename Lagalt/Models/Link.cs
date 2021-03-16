@@ -18,6 +18,6 @@ namespace Lagalt.Models
         // Foreign Key
         public int ProjectId { get; set; }
         // Relationships
-        public ICollection<Project> Projects { get; set; }
+        public Project Project { get; set; }
     }
 }
