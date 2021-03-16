@@ -20,6 +20,7 @@ namespace Lagalt.DB
         public DbSet<UserComment> UserComments { get; set; }
         public DbSet<ProjectApplication> ProjectApplications { get; set; }
         public DbSet<Theme> Themes { get; set; }
+        public DbSet<Link> Links { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
