@@ -14,6 +14,7 @@ namespace Lagalt.Models
         [Required]
         [MaxLength(200)]
         public string Name { get; set; }
+        [Required]
         [MaxLength(500)]
         public string Description { get; set; }
         [DataType(DataType.ImageUrl)]
@@ -25,6 +26,7 @@ namespace Lagalt.Models
         // Relationships
         public Industry Industry { get; set; }
         public int IndustryId { get; set; }
+        public Link Link { get; set; }
         public ICollection<User> Users { get; set; }
         public ICollection<UserComment> UserComments { get; set; }
         public ICollection<Theme> Themes { get; set; }
