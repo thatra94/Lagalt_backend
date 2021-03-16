@@ -13,7 +13,8 @@ namespace Lagalt.Models
         public string Name { get; set; }
 
         // Reference for keycloak
-        public string UserToken { get; set; }
+        [MaxLength(100)]
+        public string UserId { get; set; }
 
         [DataType(DataType.ImageUrl)]
         [MaxLength(2083)]
