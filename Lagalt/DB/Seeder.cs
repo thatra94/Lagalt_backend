@@ -27,12 +27,12 @@ namespace Lagalt.DB
         {
             ICollection<User> users = new List<User>()
             {
-                new User{ Id = 1,  Name = "Example User", UserToken = "example-token", ImageUrl = "https://www.shankarainfra.com/img/avatar.png", 
+                new User{ Id = 1,  Name = "Example User", UserId = "example-token", ImageUrl = "https://www.shankarainfra.com/img/avatar.png", 
                 Description = "Hei, jeg heter Alias. Jeg liker Bøker "},
-                new User{ Id = 2, Name = "Another User", UserToken = "another-token", ImageUrl = "https://www.shankarainfra.com/img/avatar.png",
+                new User{ Id = 2, Name = "Another User", UserId = "another-token", ImageUrl = "https://www.shankarainfra.com/img/avatar.png",
                     Description = "Gamer til tusen"
                 },
-                new User{ Id = 3, Name = "Marius Jansen", UserToken = "another-token", ImageUrl = "https://www.shankarainfra.com/img/avatar.png",
+                new User{ Id = 3, Name = "Marius Jansen", UserId = "another-token", ImageUrl = "https://www.shankarainfra.com/img/avatar.png",
                     Description = "Gått på skole i mange år, liker å dra på konsert noen ganger"
                 }
             };

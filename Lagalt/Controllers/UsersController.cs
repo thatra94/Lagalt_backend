@@ -42,12 +42,12 @@ namespace Lagalt.Controllers
         }
 
         // GET: api/User/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CommonResponse<UserDto>>> GetUser(int id)
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<CommonResponse<UserDto>>> GetUser(string userId)
         {
             // Create response object
             CommonResponse<UserDto> respons = new CommonResponse<UserDto>();
-            var userModel = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync(u => u.Id == id);
+            var userModel = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (userModel == null)
             {
