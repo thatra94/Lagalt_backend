@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Lagalt.DTOs;
+using Lagalt.DTOs.Users;
 using Lagalt.Models;
 using System;
 
@@ -10,6 +11,7 @@ namespace Lagalt.Profiles
         public UserProfil()
         {
             CreateMap<UserDto, User>().ReverseMap();
+            CreateMap<UserCreateDto, User>().ReverseMap();
         }
     }
 }

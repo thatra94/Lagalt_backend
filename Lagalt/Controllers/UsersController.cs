@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using Lagalt.ResponseModel;
 using Lagalt.DTOs;
+using Lagalt.DTOs.Users;
 
 namespace Lagalt.Controllers
 {
@@ -93,12 +94,38 @@ namespace Lagalt.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<CommonResponse<UserDto>>> PostUser(UserCreateDto user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            // Make response object
+            CommonResponse<UserDto> resp = new CommonResponse<UserDto>();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            // See if the author is valid
+            if (!ModelState.IsValid)
+            {
+                resp.Error = new Error
+                {
+                    Status = 400,
+                    Message = "The user did not pass validation, ensure it is in the correct format."
+                };
+                return BadRequest(resp);
+            }
+
+            User userModel = _mapper.Map<User>(user);
+
+            // Try to add - if it fails here there is something wrong with the server
+            try
+            {
+                _context.Users.Add(userModel);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                resp.Error = new Error { Status = 500, Message = e.Message };
+                return StatusCode(StatusCodes.Status500InternalServerError, resp);
+            }
+            // Gets here if its a success
+            resp.Data = _mapper.Map<UserDto>(userModel);
+            return CreatedAtAction("GetUser", new { id = resp.Data.Id }, resp);
         }
 
         // DELETE: api/Users/5
