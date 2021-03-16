@@ -27,7 +27,7 @@ namespace Lagalt.Models
         public int IndustryId { get; set; }
         public ICollection<User> Users { get; set; }
         public ICollection<UserComment> UserComments { get; set; }
-
-
+        public ICollection<Theme> Themes { get; set; }
+        public ICollection<Skill> Skills { get; set; }
     }
 }
