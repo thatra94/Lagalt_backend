@@ -13,5 +13,6 @@ namespace Lagalt.Models
         [MaxLength(50)]
         public string Name { get; set; }
         // Relationships
+        public ICollection<Project> Projects { get; set; }
     }
 }

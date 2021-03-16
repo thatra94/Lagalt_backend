@@ -153,22 +153,7 @@ namespace Lagalt.Controllers
         {
             return _context.Projects.Any(e => e.Id == id);
         }
-        /*
-        [HttpGet("main")]
-        public IQueryable<ProjectMainDto> GetProjectsMain()
-        {
-            var projects = from p in _context.Projects
-                        select new ProjectMainDto()
-                        {
-                            Id = p.Id,
-                            Name = p.Name,
-                            ImageUrl = p.ImageUrl,
-                            Status = p.Status,
-                            IndustryName = p.Industry.Name
-                        };
 
-            return projects;
-        } */
         [HttpGet("main")]
         public ActionResult<CommonResponse<IQueryable<ProjectMainDto>>> GetProjectsMain()
         {
