@@ -17,8 +17,19 @@ namespace Lagalt.DB
                 new Skill{ Id = 3,  Name = "Kommunikator"},
                 new Skill {Id = 4, Name = "Problemløser"},
                 new Skill {Id = 5, Name = "MovieExpert"},
-                new Skill {Id = 6, Name = "AI Tech"}
-
+                new Skill {Id = 6, Name = "AI Tech"},
+                new Skill {Id = 7, Name= "Unity"},
+                new Skill {Id = 8, Name= "C#"},
+                new Skill {Id = 9, Name= "Blender"},
+                new Skill {Id = 10, Name= "HTML"},
+                new Skill {Id = 11, Name= "CSS"},
+                new Skill {Id = 12, Name= "Javascript"},
+                new Skill {Id = 13, Name= "React"},
+                new Skill {Id = 14, Name= "Angular"},
+                new Skill {Id = 15, Name= "Ableton"},
+                new Skill {Id = 16, Name= "Java"},
+                new Skill {Id = 17, Name= "PHP"},
+                new Skill {Id = 18, Name= "Animation"},
             };
             return skills;
         }

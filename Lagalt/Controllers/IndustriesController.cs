@@ -28,7 +28,7 @@ namespace Lagalt.Controllers
 
         // GET: api/Industries
         [HttpGet]
-        public async Task<ActionResult<CommonResponse<IEnumerable<Industry>>>> GetIndustries()
+        public async Task<ActionResult<CommonResponse<IEnumerable<IndustryDto>>>> GetIndustries()
         {
             CommonResponse<IEnumerable<IndustryDto>> response = new CommonResponse<IEnumerable<IndustryDto>>();
             // Map from model to Dto
@@ -42,7 +42,7 @@ namespace Lagalt.Controllers
 
         // GET: api/Industries/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CommonResponse<Industry>>> GetIndustry(int id)
+        public async Task<ActionResult<CommonResponse<IndustryDto>>> GetIndustry(int id)
         {
             CommonResponse<IndustryDto> response = new CommonResponse<IndustryDto>();
             

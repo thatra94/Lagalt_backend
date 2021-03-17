@@ -28,7 +28,7 @@ namespace Lagalt.Controllers
 
         // GET: api/UserComments
         [HttpGet]
-        public async Task<ActionResult<CommonResponse<IEnumerable<UserComment>>>> GetUserComments()
+        public async Task<ActionResult<CommonResponse<IEnumerable<UserCommentDto>>>> GetUserComments()
         {
             CommonResponse<IEnumerable<UserCommentDto>> response = new CommonResponse<IEnumerable<UserCommentDto>>();
             // Maps from model to Dto

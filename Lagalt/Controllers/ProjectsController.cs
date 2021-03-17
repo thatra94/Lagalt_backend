@@ -10,6 +10,7 @@ using Lagalt.Models;
 using Lagalt.ResponseModel;
 using Lagalt.DTOs;
 using AutoMapper;
+using Lagalt.DTOs.Projects;
 
 namespace Lagalt.Controllers
 {
@@ -42,7 +43,7 @@ namespace Lagalt.Controllers
 
         // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CommonResponse<Project>>> GetProject(int id)
+        public async Task<ActionResult<CommonResponse<ProjectDto>>> GetProject(int id)
         {
             CommonResponse<ProjectDto> response = new CommonResponse<ProjectDto>();
 
@@ -158,7 +159,7 @@ namespace Lagalt.Controllers
         public ActionResult<CommonResponse<IQueryable<ProjectMainDto>>> GetProjectsMain()
         {
             CommonResponse<IQueryable<ProjectMainDto>> response = new CommonResponse<IQueryable<ProjectMainDto>>();
-       
+
             var projects = from p in _context.Projects
                            select new ProjectMainDto()
                            {
@@ -174,5 +175,32 @@ namespace Lagalt.Controllers
 
             return Ok(response);
         }
+
+       
+        /*
+        [HttpGet("skills")]
+        public ActionResult<CommonResponse<IEnumerable<ProjectSkillsDto>>> GetProjectsSkillsMain()
+        {
+            CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
+
+            var projects = from p in _context.Projects
+                           select new ProjectSkillsDto()
+                           {
+                               Id = p.Id,
+                               Name = p.Name,
+                               ImageUrl = p.ImageUrl,
+                               Status = p.Status,
+                               IndustryName = p.Industry.Name,                
+                               ProjectSkills = p.Skills
+                            };
+
+            // Return data
+            response.Data = projects;
+
+
+            return Ok(response);
+        } */
+
+
     }
 }
