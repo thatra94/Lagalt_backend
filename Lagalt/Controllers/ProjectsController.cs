@@ -176,7 +176,7 @@ namespace Lagalt.Controllers
             return Ok(response);
         }
 
-       
+
         /*
         [HttpGet("skills")]
         public ActionResult<CommonResponse<IEnumerable<ProjectSkillsDto>>> GetProjectsSkillsMain()
@@ -190,8 +190,8 @@ namespace Lagalt.Controllers
                                Name = p.Name,
                                ImageUrl = p.ImageUrl,
                                Status = p.Status,
-                               IndustryName = p.Industry.Name,                
-                               ProjectSkills = p.Skills
+                               IndustryName = p.Industry.Name
+                             
                             };
 
             // Return data
@@ -201,6 +201,24 @@ namespace Lagalt.Controllers
             return Ok(response);
         } */
 
+
+        [HttpGet("skills")]
+        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectSkillsDto>>>> GetProjectsWithSkills()
+        {
+            // Make CommonResponse object to use
+            CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
+            var projectModel = await _context.Projects.Include(p => p.Skills).ToListAsync();
+
+     
+            List<ProjectSkillsDto> projects = _mapper.Map<List<ProjectSkillsDto>>(projectModel);
+            foreach(ProjectSkillsDto project in projects)
+            {
+                project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
+            }
+
+            response.Data = projects;
+            return Ok(response);
+        } 
 
     }
 }

@@ -16,6 +16,6 @@ namespace Lagalt.DTOs.Projects
         public string Status { get; set; }
         // Industry field
         public string IndustryName { get; set; }
-        public ICollection<SkillDto> ProjectSkills { get; set; }
+        public ICollection<SkillDto> Skills { get; set; }
     }
 }
