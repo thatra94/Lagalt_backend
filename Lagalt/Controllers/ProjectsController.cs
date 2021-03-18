@@ -55,23 +55,30 @@ namespace Lagalt.Controllers
 
         // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CommonResponse<ProjectDto>>> GetProject(int id)
+        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectViewDto>>>> GetProjectInProjectView(int id)
         {
-            CommonResponse<ProjectDto> response = new CommonResponse<ProjectDto>();
+            CommonResponse<ProjectViewDto> response = new CommonResponse<ProjectViewDto>();
 
-            var projectModel = await _context.Projects.FindAsync(id);
+            var projectModel = await _context.Projects.Include(s => s.Skills)
+                                                   .Include(i => i.Industry)
+                                                   .Include(t => t.Themes)
+                                                   .Include(l => l.Links)
+                                                   .FirstOrDefaultAsync(i => i.Id == id);
 
             if (projectModel == null)
             {
                 response.Error = new Error { Status = 404, Message = "Cannot find a project with that Id" };
                 return NotFound(response);
             }
-            // Maps to Dto
-            response.Data = _mapper.Map<ProjectDto>(projectModel);
+            //Map to Dto
+            ProjectViewDto project = _mapper.Map<ProjectViewDto>(projectModel);
+            project.IndustryName = project.IndustryName;
+
+            response.Data = project;
 
             return Ok(response);
-        }
-
+        } 
+     
         // PUT: api/Projects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -167,27 +174,7 @@ namespace Lagalt.Controllers
             return _context.Projects.Any(e => e.Id == id);
         }
 
-        /*
-        [HttpGet("main")]
-        public ActionResult<CommonResponse<IQueryable<ProjectMainDto>>> GetProjectsMain()
-        {
-            CommonResponse<IQueryable<ProjectMainDto>> response = new CommonResponse<IQueryable<ProjectMainDto>>();
 
-            var projects = from p in _context.Projects
-                           select new ProjectMainDto()
-                           {
-                               Id = p.Id,
-                               Name = p.Name,
-                               ImageUrl = p.ImageUrl,
-                               Status = p.Status,
-                               IndustryName = p.Industry.Name
-                           };
-
-            // Return data
-            response.Data = projects;
-
-            return Ok(response);
-        } */
 
     }
 }
