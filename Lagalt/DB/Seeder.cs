@@ -45,9 +45,56 @@ namespace Lagalt.DB
                 },
                 new User{ Id = 3, Name = "Marius Jansen", UserId = "another-token", ImageUrl = "https://www.shankarainfra.com/img/avatar.png",
                     Description = "Gått på skole i mange år, liker å dra på konsert noen ganger"
+                },
+                new User{ Id = 4, Name = "Karl Karlsen", UserId = "12ab12ab", ImageUrl = "https://www.shankarainfra.com/img/avatar.png",
+                    Description = "Jeg har en hund og liker å gå på tur"
                 }
             };
             return users;
+        }
+
+        public static ICollection<Portfolio> SeedPortfolio()
+        {
+            ICollection<Portfolio> portfolios = new List<Portfolio>()
+            {
+                new Portfolio
+                {
+                    Id = 1,
+                    Name = "Skole-prosjekt",
+                    Link = "https://github.com/thatra94/Lagalt_backend/tree/main/Lagalt",
+                    Description = "Når jeg gikk på skolen",
+                    UserId = 1
+                },
+                new Portfolio
+                {
+                    Id = 2,
+                    Name = "Film-prosjekt",
+                    Link = "https://www.youtube.com/watch?v=dkZvM1Kq-0s&ab_channel=D4Darious",
+                    UserId = 1
+                },
+                new Portfolio
+                {
+                    Id = 3,
+                    Name = "Hobby prosjekt",
+                    Link = "https://github.com/ellerish/FileSystemManager",
+                    UserId = 1
+                },
+                new Portfolio
+                {
+                    Id = 4,
+                    Name = "Musikk prosjekt",
+                    Link = "https://www.youtube.com/watch?v=SRcnnId15BA&ab_channel=50CentVEVOr",
+                    UserId = 2
+                },
+                new Portfolio
+                {
+                    Id = 5,
+                    Name = "Musikkvideo",
+                    Link = "https://www.youtube.com/watch?v=SRcnnId15BA&ab_channel=50CentVEVOr",
+                    UserId = 2
+                }
+            };
+            return portfolios;
         }
 
         public static ICollection<ProjectApplication> SeedProjectApplication()

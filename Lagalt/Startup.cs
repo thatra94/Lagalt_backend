@@ -34,8 +34,6 @@ namespace Lagalt
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));
-            services.AddDbContext<LagaltContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -54,15 +52,14 @@ namespace Lagalt
                     });
             });
 
-
-            /*   if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIROMENT") == "Production")
-                   services.AddDbContext<LagaltContext>(options =>
-                   options.UseSqlServer(Configuration.GetConnectionString("AzureConnection")));
-               else services.AddDbContext<LagaltContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+                services.AddDbContext<LagaltContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("AzureConnection")));
+            else 
+                services.AddDbContext<LagaltContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
                 services.BuildServiceProvider().GetService<LagaltContext>().Database.Migrate();
 
-            */
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -98,7 +95,7 @@ namespace Lagalt
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Lagalt v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Lagalt v1")); 
             }
 
             app.UseHttpsRedirection();
