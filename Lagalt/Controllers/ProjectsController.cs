@@ -10,6 +10,8 @@ using Lagalt.Models;
 using Lagalt.ResponseModel;
 using Lagalt.DTOs;
 using AutoMapper;
+using Lagalt.DTOs.Projects;
+using Lagalt.DTOs.Industries;
 
 namespace Lagalt.Controllers
 {
@@ -26,23 +28,31 @@ namespace Lagalt.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/Projects
         [HttpGet]
-        public async Task<ActionResult<CommonResponse<IEnumerable<ProjectDto>>>> GetProjects()
+        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectSkillsDto>>>> GetProjectsWithSkills()
         {
-            CommonResponse<IEnumerable<ProjectDto>> response = new CommonResponse<IEnumerable<ProjectDto>>();
-            // Maps from model to Dto
-            var modelProject = await _context.Projects.ToListAsync();
-            List<ProjectDto> projects = _mapper.Map<List<ProjectDto>>(modelProject);
+            // Make CommonResponse object to use
+            CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
+            var projectModel = await _context.Projects.Include(p => p.Skills)
+                                                      .Include(p => p.Industry)
+                                                      .ToListAsync();
+
+            // Map skills and industry
+            List<ProjectSkillsDto> projects = _mapper.Map<List<ProjectSkillsDto>>(projectModel);
+            foreach (ProjectSkillsDto project in projects)
+            {
+                project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
+                // project.Industry = _mapper.Map<IndustryDto>(project.Industry);
+                project.IndustryName = project.IndustryName;
+            }
             // Return data
             response.Data = projects;
-
             return Ok(response);
         }
 
         // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CommonResponse<Project>>> GetProject(int id)
+        public async Task<ActionResult<CommonResponse<ProjectDto>>> GetProject(int id)
         {
             CommonResponse<ProjectDto> response = new CommonResponse<ProjectDto>();
 
@@ -154,11 +164,12 @@ namespace Lagalt.Controllers
             return _context.Projects.Any(e => e.Id == id);
         }
 
+        /*
         [HttpGet("main")]
         public ActionResult<CommonResponse<IQueryable<ProjectMainDto>>> GetProjectsMain()
         {
             CommonResponse<IQueryable<ProjectMainDto>> response = new CommonResponse<IQueryable<ProjectMainDto>>();
-       
+
             var projects = from p in _context.Projects
                            select new ProjectMainDto()
                            {
@@ -173,6 +184,7 @@ namespace Lagalt.Controllers
             response.Data = projects;
 
             return Ok(response);
-        }
+        } */
+
     }
 }

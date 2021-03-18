@@ -39,6 +39,13 @@ namespace Lagalt.DB
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 6, UsersId = 2 });
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 1, UsersId = 2 });
 
+            // Relationships for ProjectUser
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 1, SkillsId = 8 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 1, SkillsId = 11 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 1, SkillsId = 13 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 5, SkillsId = 10 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 5, SkillsId = 11 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 5, SkillsId = 14 });
         }
     }
 }

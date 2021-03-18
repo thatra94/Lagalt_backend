@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Lagalt.DTOs;
+using Lagalt.DTOs.Projects;
 using Lagalt.Models;
 
 namespace Lagalt.Profiles
@@ -10,7 +11,9 @@ namespace Lagalt.Profiles
         {
             CreateMap<ProjectDto, Project>().ReverseMap();
             CreateMap<ProjectCreateDto, Project>().ReverseMap();
-            CreateMap<ProjectMainDto, Project>().ReverseMap();
+            CreateMap<ProjectMainDto, Project>().ReverseMap();      
+            
+            CreateMap<ProjectSkillsDto, Project>().ReverseMap();
         }
     }
 }
