@@ -13,6 +13,6 @@ namespace Lagalt.DTOs.Links
         public string Name { get; set; }
         public string Url { get; set; }
         // Foreign Key
-        public int ProjectId { get; set; }
+        // public int ProjectId { get; set; }
     }
 }
