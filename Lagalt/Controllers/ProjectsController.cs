@@ -12,6 +12,7 @@ using Lagalt.DTOs;
 using AutoMapper;
 using Lagalt.DTOs.Projects;
 using Lagalt.DTOs.Industries;
+using Lagalt.DTOs.Themes;
 
 namespace Lagalt.Controllers
 {
@@ -35,6 +36,7 @@ namespace Lagalt.Controllers
             CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
             var projectModel = await _context.Projects.Include(p => p.Skills)
                                                       .Include(p => p.Industry)
+                                                      .Include(p => p.Themes)
                                                       .ToListAsync();
 
             // Map skills and industry
@@ -42,6 +44,7 @@ namespace Lagalt.Controllers
             foreach (ProjectSkillsDto project in projects)
             {
                 project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
+                project.Themes = _mapper.Map<List<ThemeDto>>(project.Themes);
                 // project.Industry = _mapper.Map<IndustryDto>(project.Industry);
                 project.IndustryName = project.IndustryName;
             }

@@ -1,9 +1,5 @@
-﻿using Lagalt.DTOs.Industries;
-using Lagalt.Models;
-using System;
+﻿using Lagalt.DTOs.Themes;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lagalt.DTOs.Projects
 {
@@ -18,6 +14,7 @@ namespace Lagalt.DTOs.Projects
         // Industry field
         public string IndustryName { get; set; }
         public ICollection<SkillDto> Skills { get; set; }
-       // public IndustryDto Industry { get; set; }
+        public ICollection<ThemeDto> Themes { get; set; }
+        // public IndustryDto Industry { get; set; }
     }
 }

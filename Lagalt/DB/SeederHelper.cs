@@ -124,6 +124,116 @@ namespace Lagalt.DB
             };
             return industries;
         }
- 
+
+        public static ICollection<Theme> SeedThemes()
+        {
+            ICollection<Theme> themes = new List<Theme>()
+            {
+                new Theme
+                {
+                    Id = 1,
+                    Name = "RPG"
+                },
+                new Theme
+                {
+                    Id = 2,
+                    Name = "Action"
+                },
+                new Theme
+                {
+                    Id = 3,
+                    Name = "Strategy"
+                },
+                new Theme
+                {
+                    Id = 4,
+                    Name = "Roguelike"
+                },
+                new Theme
+                {
+                    Id = 5,
+                    Name = "Creativity"
+                },
+                new Theme
+                {
+                    Id = 6,
+                    Name = "3D"
+                },
+                new Theme
+                {
+                    Id = 7,
+                    Name = "Sci-fi"
+                },
+                new Theme
+                {
+                    Id = 8,
+                    Name = "Læringsplattform"
+                },
+                new Theme
+                {
+                    Id = 9,
+                    Name = "LMS"
+                },
+                new Theme
+                {
+                    Id = 10,
+                    Name = "Dystopisk"
+                },
+                new Theme
+                {
+                    Id = 11,
+                    Name = "kostymedesign"
+                },
+                new Theme
+                {
+                    Id = 12,
+                    Name = "Eventyr"
+                },
+                new Theme
+                {
+                    Id = 13,
+                    Name = "Utdanning"
+                },
+                new Theme
+                {
+                    Id = 14,
+                    Name = "Web"
+                },
+                new Theme
+                {
+                    Id = 15,
+                    Name = "Sandkassespill"
+                },
+                new Theme
+                {
+                    Id = 16,
+                    Name = "Vikingtid"
+                },
+                new Theme
+                {
+                    Id = 17,
+                    Name = "Overlevelsesspill"
+                },
+                new Theme
+                {
+                    Id = 18,
+                    Name = "Utvikling"
+                },
+                new Theme
+                {
+                    Id = 19,
+                    Name = "PMS"
+                },
+                new Theme
+                {
+                    Id = 20,
+                    Name = "Filmproduksjon"
+                }
+
+            };
+
+            return themes;
+        }
+
     }
 }
