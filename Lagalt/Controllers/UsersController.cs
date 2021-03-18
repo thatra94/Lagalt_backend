@@ -52,7 +52,7 @@ namespace Lagalt.Controllers
 
             if (userModel == null)
             {
-                respons.Error = new Error { Status = 404, Message = "Cannot find an user with that Id" };
+                respons.Error = new Error { Status = 404, Message = "Cannot find a user with that Id" };
                 return NotFound(respons);
             }
             // Map 
@@ -62,23 +62,23 @@ namespace Lagalt.Controllers
 
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> PutUser(string userId, UserDto user)
         {
-            if (id != user.Id)
+            if (userId != user.UserId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
-            
+            _context.Entry(_mapper.Map<User>(user)).State = EntityState.Modified;
+
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!UserExists(userId))
                 {
                     return NotFound();
                 }
@@ -87,11 +87,10 @@ namespace Lagalt.Controllers
                     throw;
                 }
             }
-
             return NoContent();
         }
 
-        // POST: api/Movies
+        // POST: api/Users
         [HttpPost]
         public async Task<ActionResult<CommonResponse<UserDto>>> PostUser(UserCreateDto user)
         {
@@ -125,8 +124,10 @@ namespace Lagalt.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<ActionResult<CommonResponse<UserDto>>> DeleteUser(int id)
         {
+            CommonResponse<UserDto> respons = new();
+
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
@@ -136,24 +137,25 @@ namespace Lagalt.Controllers
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+            respons.Data = _mapper.Map<UserDto>(user);
 
-        private bool UserExists(int id)
+            return Ok(respons);
+        }
+        private bool UserExists(string userId)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return _context.Users.Any(e => e.UserId == userId);
         }
 
         //Get skills for user
-        [HttpGet("{id}/Skills")]
-        public async Task<ActionResult<CommonResponse<SkillDto>>> GetSkillsInUser(int id)
+        [HttpGet("{userId}/Skills")]
+        public async Task<ActionResult<CommonResponse<SkillDto>>> GetSkillsInUser(string userId)
         {
             // Make response object
             CommonResponse<IEnumerable<SkillDto>> respons = new CommonResponse<IEnumerable<SkillDto>>();
-            User user = await _context.Users.Include(s => s.Skills).Where(u => u.Id == id).FirstOrDefaultAsync();
+            User user = await _context.Users.Include(s => s.Skills).Where(u => u.UserId == userId).FirstOrDefaultAsync();
             if (user == null)
             {
-                respons.Error = new Error { Status = 404, Message = "An user with that id could not be found." };
+                respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
                 return NotFound(respons);
             }
             foreach (Skill skill in user.Skills)
@@ -167,15 +169,15 @@ namespace Lagalt.Controllers
 
 
         //Get skills for user
-        [HttpGet("{id}/Projects")]
-        public async Task<ActionResult<CommonResponse<ProjectMainDto>>> GetProjectForUser(int id)
+        [HttpGet("{userId}/Projects")]
+        public async Task<ActionResult<CommonResponse<ProjectMainDto>>> GetProjectForUser(string userId)
         {
             // Make response object
             CommonResponse<IEnumerable<ProjectMainDto>> respons = new CommonResponse<IEnumerable<ProjectMainDto>>();
-            User user = await _context.Users.Include(p => p.Projects).Where(u => u.Id == id).FirstOrDefaultAsync();
+            User user = await _context.Users.Include(p => p.Projects).Where(u => u.UserId == userId).FirstOrDefaultAsync();
             if (user == null)
             {
-                respons.Error = new Error { Status = 404, Message = "An user with that id could not be found." };
+                respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
                 return NotFound(respons);
             }
             foreach (Project project in user.Projects)

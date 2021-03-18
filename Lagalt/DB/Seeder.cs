@@ -48,7 +48,6 @@ namespace Lagalt.DB
                     Id = 1,
                     ProjectId = 1,
                     UserId = 1,
-                    Role = "user",
                     MotivationText = "Jeg vil gjerne være med på prosjektet fordi jeg er god",
                     Status = "Pending"
                 },
@@ -57,7 +56,6 @@ namespace Lagalt.DB
                     Id = 2,
                     ProjectId = 4,
                     UserId = 3,
-                    Role = "user",
                     MotivationText = "Dette er noe for meg, jeg liker sporingssystemer",
                     Status = "Approved"
                 },
@@ -66,7 +64,6 @@ namespace Lagalt.DB
                     Id = 3,
                     ProjectId = 2,
                     UserId = 3,
-                    Role = "user",
                     MotivationText = "Har lyst til å være med",
                     Status = "Declined"
                 }

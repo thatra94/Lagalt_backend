@@ -15,7 +15,6 @@ namespace Lagalt.Models
         public int UserId { get; set; }
         // Navigation property to Project class
         public User User { get; set; }
-        public string Role { get; set; }        //Adminstrator / User 
         public string MotivationText { get; set; }
         public string Status { get; set; }  //Pending, accepted / declined 
 
