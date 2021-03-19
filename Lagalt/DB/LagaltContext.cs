@@ -33,6 +33,7 @@ namespace Lagalt.DB
             modelBuilder.Entity<ProjectApplication>().HasData(Seeder.SeedProjectApplication());
             modelBuilder.Entity<Theme>().HasData(SeederHelper.SeedThemes());
             modelBuilder.Entity<Portfolio>().HasData(Seeder.SeedPortfolio());
+            modelBuilder.Entity<Link>().HasData(SeederHelper.SeedLinks());
 
             //Relationship
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 1, UsersId = 1 });
@@ -43,15 +44,23 @@ namespace Lagalt.DB
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 1, UsersId = 2 });
 
             // Relationships for ProjectUser
-            modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 8, UsersId = 1 });
             modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 1, UsersId = 1 });
+            modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 1, UsersId = 10 });
+            modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 1, UsersId = 12 });
             modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 2, UsersId = 2 });
+            modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 2, UsersId = 5 });
+            modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 2, UsersId = 7 });
             modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 3, UsersId = 2 });
             modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 4, UsersId = 2 });
             modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 5, UsersId = 2 });
             modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 6, UsersId = 3 });
+            modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 7, UsersId = 16 });
+            modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 7, UsersId = 29 });
+            modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 8, UsersId = 1 });
+            modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 9, UsersId = 29 });
+            modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 9, UsersId = 13 });
 
-            // Relationships for ProjectUser
+            // Relationships for ProjectSkill
             modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 1, SkillsId = 8 });
             modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 1, SkillsId = 11 });
             modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 1, SkillsId = 13 });
@@ -59,9 +68,19 @@ namespace Lagalt.DB
             modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 2, SkillsId = 18 });
             modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 3, SkillsId = 10 });
             modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 3, SkillsId = 16 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 4, SkillsId = 1 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 4, SkillsId = 14 });
             modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 5, SkillsId = 10 });
             modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 5, SkillsId = 11 });
             modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 5, SkillsId = 14 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 6, SkillsId = 5 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 6, SkillsId = 19 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 7, SkillsId = 12 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 7, SkillsId = 18 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 8, SkillsId = 20 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 9, SkillsId = 11 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 9, SkillsId = 14 });
+            modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 10, SkillsId = 21 });
 
             // Relationships for ProjectThemes
             modelBuilder.Entity("ProjectTheme").HasData(new { ProjectsId = 1, ThemesId = 14 });
@@ -82,6 +101,11 @@ namespace Lagalt.DB
             modelBuilder.Entity("ProjectTheme").HasData(new { ProjectsId = 7, ThemesId = 17 });
             modelBuilder.Entity("ProjectTheme").HasData(new { ProjectsId = 8, ThemesId = 1 });
             modelBuilder.Entity("ProjectTheme").HasData(new { ProjectsId = 8, ThemesId = 3 });
+            modelBuilder.Entity("ProjectTheme").HasData(new { ProjectsId = 9, ThemesId = 14 });
+            modelBuilder.Entity("ProjectTheme").HasData(new { ProjectsId = 9, ThemesId = 21 });
+            modelBuilder.Entity("ProjectTheme").HasData(new { ProjectsId = 9, ThemesId = 22 });
+            modelBuilder.Entity("ProjectTheme").HasData(new { ProjectsId = 10, ThemesId = 23 });
+            modelBuilder.Entity("ProjectTheme").HasData(new { ProjectsId = 10, ThemesId = 14 });
         }
     }
 }
