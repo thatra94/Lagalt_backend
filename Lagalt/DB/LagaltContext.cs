@@ -21,6 +21,7 @@ namespace Lagalt.DB
         public DbSet<ProjectApplication> ProjectApplications { get; set; }
         public DbSet<Theme> Themes { get; set; }
         public DbSet<Link> Links { get; set; }
+        public DbSet<Portfolio> Portfolios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -31,6 +32,7 @@ namespace Lagalt.DB
             modelBuilder.Entity<Industry>().HasData(SeederHelper.SeedIndustries());
             modelBuilder.Entity<ProjectApplication>().HasData(Seeder.SeedProjectApplication());
             modelBuilder.Entity<Theme>().HasData(SeederHelper.SeedThemes());
+            modelBuilder.Entity<Portfolio>().HasData(Seeder.SeedPortfolio());
 
             //Relationship
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 1, UsersId = 1 });

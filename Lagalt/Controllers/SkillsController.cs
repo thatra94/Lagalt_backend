@@ -89,7 +89,7 @@ namespace Lagalt.Controllers
 
         // POST: api/Skill
         [HttpPost]
-        public async Task<ActionResult<CommonResponse<SkillDto>>> PostSkill(SkillPostDto skill)
+        public async Task<ActionResult<CommonResponse<SkillDto>>> PostSkill(SkillCreateDto skill)
         {
             // Create response object
             CommonResponse<SkillDto> respons = new CommonResponse<SkillDto>();
