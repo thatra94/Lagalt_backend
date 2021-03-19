@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Lagalt.DTOs.Portfolio
 {
-    public class PortfolioDto
+    public class PortfolioCreateDto
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Link { get; set; }
         public string Description { get; set; }
+        public int UserId { get; set; }
     }
 }

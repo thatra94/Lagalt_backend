@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Lagalt.DTOs
 {
-    public class SkillPostDto
+    public class SkillCreateDto
     {
         public string Name { get; set; }
 

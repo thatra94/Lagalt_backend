@@ -12,6 +12,6 @@ namespace Lagalt.DTOs
         public string UserId { get; set; }
         public string ?ImageUrl { get; set; }
         public string ?Description { get; set; }
-        public ICollection<SkillPostDto> ?Skills { get; set; }
+        public ICollection<SkillCreateDto> ?Skills { get; set; }
 }
 }

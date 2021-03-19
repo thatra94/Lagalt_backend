@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Lagalt.DB;
 using Lagalt.Models;
 using AutoMapper;
+using Lagalt.ResponseModel;
+using Lagalt.DTOs.Portfolio;
 
 namespace Lagalt.Controllers
 {
@@ -26,81 +28,93 @@ namespace Lagalt.Controllers
 
         // GET: api/Portfolios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Portfolio>>> GetPortfolios()
+        public async Task<ActionResult<IEnumerable<CommonResponse<PortfolioDto>>>> GetPortfolios()
         {
-            return await _context.Portfolios.ToListAsync();
+            CommonResponse<IEnumerable<PortfolioDto>> resp = new CommonResponse<IEnumerable<PortfolioDto>>();
+            // Fetch list of model class and map to dto
+            var port_models = await _context.Portfolios.ToListAsync();
+            List<PortfolioDto> portfolios = _mapper.Map<List<PortfolioDto>>(port_models);
+            // Return data
+            resp.Data = portfolios; 
+            return Ok(resp);
         }
 
-        // GET: api/Portfolios/5
+        // GET: api/¨Portfolios/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Portfolio>> GetPortfolio(int id)
+        public async Task<ActionResult<CommonResponse<PortfolioDto>>> GetPortfolio(int id)
         {
+            // Create response object
+            CommonResponse<PortfolioDto> respons = new CommonResponse<PortfolioDto>();
             var portfolio = await _context.Portfolios.FindAsync(id);
-
             if (portfolio == null)
             {
-                return NotFound();
+                respons.Error = new Error { Status = 404, Message = "Cannot find a portfolio with that Id" };
+                return NotFound(respons);
             }
-
-            return portfolio;
+            // Map 
+            respons.Data = _mapper.Map<PortfolioDto>(portfolio);
+            return Ok(respons);
         }
 
-        // PUT: api/Portfolios/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPortfolio(int id, Portfolio portfolio)
-        {
-            if (id != portfolio.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(portfolio).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PortfolioExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Portfolios
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Portfolio>> PostPortfolio(Portfolio portfolio)
+        public async Task<ActionResult<CommonResponse<PortfolioDto>>> PostPortfolio(PortfolioCreateDto port)
         {
-            _context.Portfolios.Add(portfolio);
+            // Make CommonResponse object to use
+            CommonResponse<PortfolioDto> resp = new CommonResponse<PortfolioDto>();
+
+            // Map to model class
+            var model = _mapper.Map<Portfolio>(port);
+
+            // Add to db
+            _context.Portfolios.Add(model);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPortfolio", new { id = portfolio.Id }, portfolio);
+            var l = await _context.Portfolios.Include(l => l.User).FirstOrDefaultAsync(l => l.Id == model.Id);
+            resp.Data = _mapper.Map<PortfolioDto>(l);
+
+            return Ok(resp);
         }
 
-        // DELETE: api/Portfolios/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePortfolio(int id)
+        //Get portfolio for user
+        [HttpGet("users/{userId}")]
+        public async Task<ActionResult<CommonResponse<PortfolioDto>>> GetPortfolioforUser(string userId)
         {
+            // Make response object
+            CommonResponse<IEnumerable<PortfolioDto>> respons = new CommonResponse<IEnumerable<PortfolioDto>>();
+            User user = await _context.Users.Include(p => p.Portofolios).Where(u => u.UserId == userId).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
+                return NotFound(respons);
+            }
+            foreach (Portfolio portfolio in user.Portofolios)
+            {
+                portfolio.User = null;
+            }
+            // Map to dto
+            respons.Data = _mapper.Map<List<PortfolioDto>>(user.Portofolios);
+            return Ok(respons);
+        }
+
+        // DELETE: api/Skills/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<CommonResponse<PortfolioDto>>> DeletePortfolio(int id)
+        {
+            // Make response object
+            CommonResponse<PortfolioDto> respons = new CommonResponse<PortfolioDto>();
+
             var portfolio = await _context.Portfolios.FindAsync(id);
             if (portfolio == null)
             {
-                return NotFound();
+                respons.Error = new Error { Status = 404, Message = "An portfolio with that id could not be found." };
+                return NotFound(respons);
             }
-
             _context.Portfolios.Remove(portfolio);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            // Map model class to dto 
+            respons.Data = _mapper.Map<PortfolioDto>(portfolio);
+            return Ok(respons);
         }
 
         private bool PortfolioExists(int id)

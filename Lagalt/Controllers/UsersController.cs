@@ -12,6 +12,7 @@ using AutoMapper;
 using Lagalt.ResponseModel;
 using Lagalt.DTOs;
 using Lagalt.DTOs.Users;
+using Lagalt.DTOs.Portfolio;
 
 namespace Lagalt.Controllers
 {
@@ -188,5 +189,6 @@ namespace Lagalt.Controllers
             respons.Data = _mapper.Map<List<ProjectMainDto>>(user.Projects);
             return Ok(respons);
         }
+
     }
 }
