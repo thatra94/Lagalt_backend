@@ -28,12 +28,17 @@ namespace Lagalt.Controllers
 
         // GET: api/UserComments
         [HttpGet]
-        public async Task<ActionResult<CommonResponse<IEnumerable<UserCommentDto>>>> GetUserComments()
+        public async Task<ActionResult<CommonResponse<IEnumerable<UserCommentReadDto>>>> GetUserComments()
         {
-            CommonResponse<IEnumerable<UserCommentDto>> response = new CommonResponse<IEnumerable<UserCommentDto>>();
+            CommonResponse<IEnumerable<UserCommentReadDto>> response = new CommonResponse<IEnumerable<UserCommentReadDto>>();
             // Maps from model to Dto
-            var commentModel = await _context.UserComments.ToListAsync();
-            List<UserCommentDto> comments = _mapper.Map<List<UserCommentDto>>(commentModel);
+            var commentModel = await _context.UserComments.Include(uc => uc.User).ToListAsync();
+            List<UserCommentReadDto> comments = _mapper.Map<List<UserCommentReadDto>>(commentModel);
+
+            foreach (UserCommentReadDto comment in comments)
+            {
+                comment.UserName = comment.UserName;
+            }
 
             // Return data
             response.Data = comments;
@@ -50,7 +55,7 @@ namespace Lagalt.Controllers
 
             if (commentModel == null)
             {
-                response.Error = new Error { Status = 404, Message = "Cannot find an user comment with that Id" };
+                response.Error = new Error { Status = 404, Message = "Cannot find an usercomment comment with that Id" };
                 return NotFound(response);
             }
             // Map to Dto

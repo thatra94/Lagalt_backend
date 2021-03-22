@@ -1,4 +1,5 @@
 ﻿using Lagalt.Models;
+using System;
 using System.Collections.Generic;
 
 namespace Lagalt.DB
@@ -361,6 +362,55 @@ namespace Lagalt.DB
             };
 
             return links;
+        }
+
+        public static ICollection<UserComment> SeedUserComments()
+        {
+            ICollection<UserComment> comments = new List<UserComment>()
+            {
+                new UserComment
+                {
+                    Id = 1,
+                    Message = "Heyy!! Dette er en testmelding :))))",
+                    Date = new DateTime(2021, 03, 22, 15, 40, 0),
+                    UserId = 10,
+                    ProjectId = 1
+                },
+                new UserComment
+                {
+                    Id = 2,
+                    Message = "Jeg er ikke helt sikker på hva dette kommentarfeltet skal brukes til hehe",
+                    Date = new DateTime(2021, 03, 22, 16, 10, 0),
+                    UserId = 1,
+                    ProjectId = 1
+                },
+                new UserComment
+                {
+                    Id = 3,
+                    Message = "Ikke jeg heller",
+                    UserId = 12,
+                    Date = new DateTime(2021, 03, 22, 16, 15, 0),
+                    ProjectId = 1
+                },
+                new UserComment
+                {
+                    Id = 4,
+                    Message = "Når er oppstarten?",
+                    UserId = 5,
+                    Date = new DateTime(2021, 02, 14, 10, 00, 0),
+                    ProjectId = 2
+                },
+                new UserComment
+                {
+                    Id = 5,
+                    Message = "Dunno!",
+                    Date = new DateTime(2021, 02, 14, 10, 20, 0),
+                    UserId = 7,
+                    ProjectId = 2
+                }
+            };
+
+            return comments;
         }
     }
 }
