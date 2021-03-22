@@ -180,12 +180,18 @@ namespace Lagalt.Controllers
         {
             // Make response object
             CommonResponse<IEnumerable<ProjectSkillsDto>> respons = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
+            var projectModel = await _context.Projects.Include(p => p.Skills)
+                                                  .Include(p => p.Industry)
+                                                  .Include(p => p.Themes)
+                                                  .ToListAsync();
+
             User user = await _context.Users.Include(p => p.Projects).Include(s => s.Skills).Where(u => u.UserId == userId).FirstOrDefaultAsync();
             if (user == null)
             {
                 respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
                 return NotFound(respons);
             }
+
             foreach (Project project in user.Projects)
             {
                 project.Users = null;
