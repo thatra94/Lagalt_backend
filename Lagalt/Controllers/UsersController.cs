@@ -195,5 +195,42 @@ namespace Lagalt.Controllers
             return Ok(respons);
         }
 
+          [HttpPut("{userId}/Skills")]
+          public async Task<IActionResult> UpdateSkillsInUser(string userId, SkillCreateDto skillIn)
+          {
+              // Make response object
+                CommonResponse<IEnumerable<SkillCreateDto>> respons = new CommonResponse<IEnumerable<SkillCreateDto>>();
+
+              User user = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync(u => u.UserId == userId);
+              if (user == null)
+              {
+                  respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
+                  return NotFound(respons);
+              }
+            List<Skill> exSkills = user.Skills.ToList();
+            foreach (Skill old in exSkills)
+            {
+                if (skillIn.Name.Contains(old.Name))
+                {
+                    user.Skills.Remove(old);
+                }
+            }
+
+            Skill skillModel = await _context.Skills.FirstOrDefaultAsync();
+             skillModel = _mapper.Map<Skill>(skillIn);
+                      user.Skills.Add(skillModel);
+            
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+          }
+
+
+   
+
+
+
     }
+
+
 }
