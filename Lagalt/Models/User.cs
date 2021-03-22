@@ -14,6 +14,7 @@ namespace Lagalt.Models
 
         // Reference for keycloak
         [MaxLength(100)]
+        [Required]
         public string UserId { get; set; }
 
         [DataType(DataType.ImageUrl)]

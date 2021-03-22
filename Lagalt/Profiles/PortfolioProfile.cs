@@ -10,6 +10,7 @@ namespace Lagalt.Profiles
         {
             CreateMap<PortfolioDto, Portfolio>().ReverseMap();
             CreateMap<PortfolioCreateDto, Portfolio>().ReverseMap();
+            CreateMap<PortfolioUser, Portfolio>().ReverseMap();
         }
     }
 }

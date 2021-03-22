@@ -13,6 +13,8 @@ using Lagalt.ResponseModel;
 using Lagalt.DTOs;
 using Lagalt.DTOs.Users;
 using Lagalt.DTOs.Portfolio;
+using Lagalt.DTOs.Projects;
+using Lagalt.DTOs.Themes;
 
 namespace Lagalt.Controllers
 {
@@ -64,13 +66,16 @@ namespace Lagalt.Controllers
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{userId}")]
-        public async Task<IActionResult> PutUser(string userId, UserDto user)
+        public async Task<IActionResult> PutUser(string userId, UserUpdateDto user)
         {
+            // Create response object
+           CommonResponse<UserUpdateDto> resp = new CommonResponse<UserUpdateDto>();
+
             if (userId != user.UserId)
             {
-                return BadRequest();
+                resp.Error = new Error { Status = 400, Message = "There was a mismatch with the provided id and the object." };
+                return BadRequest(resp);
             }
-
             _context.Entry(_mapper.Map<User>(user)).State = EntityState.Modified;
 
             try
@@ -88,6 +93,7 @@ namespace Lagalt.Controllers
                     throw;
                 }
             }
+
             return NoContent();
         }
 
@@ -110,7 +116,7 @@ namespace Lagalt.Controllers
             // Try catch
             try
             {
-                _context.Users.Add(userModel);
+                    _context.Users.Add(userModel);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
@@ -168,14 +174,13 @@ namespace Lagalt.Controllers
             return Ok(respons);
         }
 
-
         //Get skills for user
         [HttpGet("{userId}/Projects")]
-        public async Task<ActionResult<CommonResponse<ProjectMainDto>>> GetProjectForUser(string userId)
+        public async Task<ActionResult<CommonResponse<ProjectSkillsDto>>> GetProjectForUser(string userId)
         {
             // Make response object
-            CommonResponse<IEnumerable<ProjectMainDto>> respons = new CommonResponse<IEnumerable<ProjectMainDto>>();
-            User user = await _context.Users.Include(p => p.Projects).Where(u => u.UserId == userId).FirstOrDefaultAsync();
+            CommonResponse<IEnumerable<ProjectSkillsDto>> respons = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
+            User user = await _context.Users.Include(p => p.Projects).Include(s => s.Skills).Where(u => u.UserId == userId).FirstOrDefaultAsync();
             if (user == null)
             {
                 respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
@@ -186,7 +191,7 @@ namespace Lagalt.Controllers
                 project.Users = null;
             }
             // Map to dto
-            respons.Data = _mapper.Map<List<ProjectMainDto>>(user.Projects);
+            respons.Data = _mapper.Map<List<ProjectSkillsDto>>(user.Projects);
             return Ok(respons);
         }
 
