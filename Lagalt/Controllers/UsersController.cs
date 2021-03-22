@@ -185,13 +185,12 @@ namespace Lagalt.Controllers
                                                   .Include(p => p.Themes)
                                                   .ToListAsync();
 
-            User user = await _context.Users.Include(p => p.Projects).Include(s => s.Skills).Where(u => u.UserId == userId).FirstOrDefaultAsync();
+            User user = await _context.Users.Include(p => p.Projects).Where(u => u.UserId == userId).FirstOrDefaultAsync();
             if (user == null)
             {
                 respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
                 return NotFound(respons);
             }
-
             foreach (Project project in user.Projects)
             {
                 project.Users = null;
