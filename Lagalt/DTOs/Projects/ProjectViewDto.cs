@@ -23,6 +23,5 @@ namespace Lagalt.DTOs.Projects
         public ICollection<UserDto> Users { get; set; }
         public ICollection<ThemeDto> Themes { get; set; }
         public ICollection<SkillDto> Skills { get; set; }
-        // public ICollection<UserComment> UserComments { get; set; } // Not sure if this should be a seperate dto
     }
 }

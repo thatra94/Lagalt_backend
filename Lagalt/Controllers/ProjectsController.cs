@@ -13,6 +13,7 @@ using AutoMapper;
 using Lagalt.DTOs.Projects;
 using Lagalt.DTOs.Industries;
 using Lagalt.DTOs.Themes;
+using Lagalt.DTOs.UserComments;
 
 namespace Lagalt.Controllers
 {
@@ -50,6 +51,34 @@ namespace Lagalt.Controllers
             }
             // Return data
             response.Data = projects;
+            return Ok(response);
+        }
+
+        // GET: api/Projects/5/comments
+        // Get all comments related to a project
+        [HttpGet("{id}/comments")]
+        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectCommentsDto>>>> GetProjectComments(int id)
+        {
+            CommonResponse<IEnumerable<ProjectCommentsDto>> response = new CommonResponse<IEnumerable<ProjectCommentsDto>>();
+
+            var project = await _context.Projects.Include(p => p.UserComments).
+                                                      Include(p => p.Users).
+                                                      Where(p => p.Id == id).FirstOrDefaultAsync();
+            if (project == null)
+            {
+                response.Error = new Error { Status = 404, Message = "A project with that id could not be found." };
+                return NotFound(response);
+            }
+
+            // Map to dto
+            List<ProjectCommentsDto> comments = _mapper.Map<List<ProjectCommentsDto>>(project.UserComments);
+            
+            foreach(ProjectCommentsDto comment in comments)
+            { 
+                comment.UserName = comment.UserName;
+            } 
+
+            response.Data = comments;
             return Ok(response);
         }
 

@@ -34,6 +34,7 @@ namespace Lagalt.DB
             modelBuilder.Entity<Theme>().HasData(SeederHelper.SeedThemes());
             modelBuilder.Entity<Portfolio>().HasData(Seeder.SeedPortfolio());
             modelBuilder.Entity<Link>().HasData(SeederHelper.SeedLinks());
+            modelBuilder.Entity<UserComment>().HasData(SeederHelper.SeedUserComments());
 
             //Relationship
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 1, UsersId = 1 });

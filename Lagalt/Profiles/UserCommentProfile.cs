@@ -10,6 +10,7 @@ namespace Lagalt.Profiles
         {
             CreateMap<UserCommentDto, UserComment>().ReverseMap();
             CreateMap<UserCommentCreateDto, UserComment>().ReverseMap();
+            CreateMap<UserCommentReadDto, UserComment>().ReverseMap();
         }
     }
 }
