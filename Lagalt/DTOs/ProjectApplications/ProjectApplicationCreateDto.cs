@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Lagalt.DTOs.ProjectApplications
 {
-    public class ProjectApplicationUserDto
+    public class ProjectApplicationCreateDto
     {
         public int ProjectId { get; set; }
         public int UserId { get; set; }
         public string MotivationText { get; set; }
+        public string Status { get; set; }  //Pending, accepted / declined 
     }
 }
