@@ -106,7 +106,15 @@ namespace Lagalt.Controllers
             // Try catch
             try
             {
-                _context.Skills.Add(skillModel);
+                if(_context.Skills.Any(s => s.Name == skillModel.Name))
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    _context.Skills.Add(skillModel);
+
+                }
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
