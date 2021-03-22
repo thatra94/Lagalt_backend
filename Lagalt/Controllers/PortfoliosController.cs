@@ -55,6 +55,37 @@ namespace Lagalt.Controllers
             respons.Data = _mapper.Map<PortfolioDto>(portfolio);
             return Ok(respons);
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutPortfolio(int id, PortfolioDto port)
+        {
+            // Create response object
+            CommonResponse<PortfolioDto> resp = new CommonResponse<PortfolioDto>();
+
+            if (id != port.Id)
+            {
+                resp.Error = new Error { Status = 400, Message = "There was a mismatch with the provided id and the object." };
+                return BadRequest(resp);
+            }
+            _context.Entry(_mapper.Map<Portfolio>(port)).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PortfolioExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
 
         [HttpPost]
         public async Task<ActionResult<CommonResponse<PortfolioDto>>> PostPortfolio(PortfolioCreateDto port)
@@ -119,7 +150,7 @@ namespace Lagalt.Controllers
 
         private bool PortfolioExists(int id)
         {
-            return _context.Portfolios.Any(e => e.Id == id);
+            return _context.Portfolios.Any(e => e.UserId == id);
         }
     }
 }
