@@ -47,16 +47,16 @@ namespace Lagalt.DB
                 new User{ Id = 2, Name = "Another User", UserId = "another-token", ImageUrl = "https://www.shankarainfra.com/img/avatar.png",
                     Description = "Gamer til tusen"
                 },
-                new User{ Id = 3, Name = "Marius Jansen", UserId = "another-token", ImageUrl = "https://www.shankarainfra.com/img/avatar.png",
+                new User{ Id = 3, Name = "Marius Jansen", UserId = "another-token2", ImageUrl = "https://www.shankarainfra.com/img/avatar.png",
                     Description = "Gått på skole i mange år, liker å dra på konsert noen ganger"
                 },
                 new User{ Id = 4, Name = "Karl Karlsen", UserId = "12ab12ab", ImageUrl = "https://www.shankarainfra.com/img/avatar.png",
                     Description = "Jeg har en hund og liker å gå på tur"
                 },
-                new User{ Id = 5, Name = "Nils", UserId = "another-token1", ImageUrl = "https://static.wikia.nocookie.net/motibrostet/images/2/2b/Nils_Svendsen.png/revision/latest?cb=20151231015619",
+                new User{ Id = 5, Name = "Nils", UserId = "another-to", ImageUrl = "https://static.wikia.nocookie.net/motibrostet/images/2/2b/Nils_Svendsen.png/revision/latest?cb=20151231015619",
                     Description = "Jeg liker bannan og laban"
                 },
-                new User{ Id = 6, Name = "Karl Reverud", UserId = "another-token2", ImageUrl = "https://static.wikia.nocookie.net/motibrostet/images/8/87/Karl_Reverud.png/revision/latest/scale-to-width-down/340?cb=20200223142852",
+                new User{ Id = 6, Name = "Karl Reverud", UserId = "anotheb", ImageUrl = "https://static.wikia.nocookie.net/motibrostet/images/8/87/Karl_Reverud.png/revision/latest/scale-to-width-down/340?cb=20200223142852",
                     Description = "Jeg er sjef i C-konsult og liker å pusle med kreative prosjekter på fritiden"
                 },
                 new User{ Id = 7, Name = "Henry", UserId = "another-token3", ImageUrl = "https://1.bp.blogspot.com/-9qzG44d0m30/XfO_Fu_b8NI/AAAAAAAAmu4/OUNLse_hN2sUkeHzxoRWYWmUvn6OqnWWQCLcBGAsYHQ/s1600/48992181_2368337909903300_2220834138863173632_o.jpg",
@@ -162,21 +162,22 @@ namespace Lagalt.DB
                     Id = 3,
                     Name = "Hobby prosjekt",
                     Link = "https://github.com/ellerish/FileSystemManager",
-                    UserId = 1
+                    UserId = 2
                 },
                 new Portfolio
                 {
                     Id = 4,
                     Name = "Musikk prosjekt",
                     Link = "https://www.youtube.com/watch?v=SRcnnId15BA&ab_channel=50CentVEVOr",
-                    UserId = 2
+                    UserId = 3
+
                 },
                 new Portfolio
                 {
                     Id = 5,
                     Name = "Musikkvideo",
                     Link = "https://www.youtube.com/watch?v=SRcnnId15BA&ab_channel=50CentVEVOr",
-                    UserId = 2
+                    UserId = 4
                 }
             };
             return portfolios;
