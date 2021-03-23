@@ -12,7 +12,5 @@ namespace Lagalt.DTOs.Links
         [DataType(DataType.Url)]
         [MaxLength(2083)]
         public string Url { get; set; }
-        // Foreign Key
-        public int ProjectId { get; set; }
     }
 }

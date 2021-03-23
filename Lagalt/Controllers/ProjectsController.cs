@@ -111,9 +111,9 @@ namespace Lagalt.Controllers
         // PUT: api/Projects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProject(int id, ProjectDto project)
+        public async Task<IActionResult> PutProject(int id, ProjectUpdateDto project)
         {
-            CommonResponse<ProjectDto> response = new CommonResponse<ProjectDto>();
+            CommonResponse<ProjectUpdateDto> response = new CommonResponse<ProjectUpdateDto>();
 
             if (id != project.Id)
             {
@@ -177,7 +177,7 @@ namespace Lagalt.Controllers
             response.Data = _mapper.Map<ProjectDto>(projectModel);
 
 
-            return CreatedAtAction("GetProject", new { id = response.Data.Id }, response);
+            return CreatedAtAction("GetProjectInProjectView", new { id = response.Data.Id }, response);
         }
 
         // DELETE: api/Projects/5
