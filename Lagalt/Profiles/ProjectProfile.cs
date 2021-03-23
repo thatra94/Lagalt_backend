@@ -13,10 +13,10 @@ namespace Lagalt.Profiles
             CreateMap<ProjectCreateDto, Project>().ReverseMap();
             CreateMap<ProjectMainDto, Project>().ReverseMap();
             CreateMap<ProjectViewDto, Project>().ReverseMap();
+            CreateMap<ProjectSkillsDto, Project>().ReverseMap();
+            CreateMap<ProjectUpdateDto, Project>().ReverseMap();
             //For mapping user comments from a specific project
             CreateMap<ProjectCommentsDto, UserComment>().ReverseMap();
-
-            CreateMap<ProjectSkillsDto, Project>().ReverseMap();
         }
     }
 }
