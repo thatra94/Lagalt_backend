@@ -210,9 +210,67 @@ namespace Lagalt.DB
                     UserId = 3,
                     MotivationText = "Har lyst til å være med",
                     Status = "Declined"
+                },
+                new ProjectApplication
+                {
+                    Id = 4,
+                    ProjectId = 1,
+                    UserId = 4,
+                    MotivationText = "Jeg har passende skills",
+                    Status = "Pending"
                 }
             };
             return proApplication;
+        }
+
+        public static ICollection<UserHistory> SeedUserHistory()
+        {
+            ICollection<UserHistory> uh = new List<UserHistory>()
+            {//user-project-click, user-project-seen, user-project-applied
+                new UserHistory
+                {
+                    Id = 1,
+                    HistoryType = "user-project-click",
+                    UserId = 1,
+                    ProjectId = 1
+                },
+                   new UserHistory
+                {
+                    Id = 2,
+                    HistoryType = "user-project-seen",
+                    UserId = 1,
+                    ProjectId = 1
+                },
+                   new UserHistory
+                {
+                    Id = 3,
+                    HistoryType =  "user-project-seen",
+                    UserId = 1,
+                    ProjectId = 2
+                },
+                   new UserHistory
+                {
+                    Id = 4,
+                    HistoryType = "user-project-applied",
+                    UserId = 1,
+                    ProjectId = 3
+                },
+                   new UserHistory
+                {
+                    Id = 5,
+                    HistoryType = "user-project-applied",
+                    UserId = 1,
+                    ProjectId = 2
+                },
+                   new UserHistory
+                {
+                    Id = 6,
+                    HistoryType = "user-project-click",
+                    UserId = 1,
+                    ProjectId = 7
+                }
+            };
+            return uh;
         }
     }
 }

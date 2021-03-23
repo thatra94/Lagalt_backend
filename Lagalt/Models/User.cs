@@ -28,6 +28,7 @@ namespace Lagalt.Models
         public ICollection<Project> Projects { get; set; }
         public ICollection<UserComment> UserComments { get; set; }
         public ICollection<Portfolio> Portofolios { get; set; }
+        public ICollection<UserHistory> UserHistories { get; set; }
 
     }
 }
