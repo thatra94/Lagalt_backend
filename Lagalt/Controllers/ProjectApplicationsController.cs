@@ -28,55 +28,53 @@ namespace Lagalt.Controllers
 
         // GET: api/ProjectApplications
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProjectApplication>>> GetProjectApplication()
+        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectApplicationDto>>>> GetProjectsApplications()
         {
-            return await _context.ProjectApplications.ToListAsync();
+            CommonResponse<IEnumerable<ProjectApplicationDto>> resp = new CommonResponse<IEnumerable<ProjectApplicationDto>>();
+            // Fetch list of model class and map to dto
+            var models = await _context.ProjectApplications.ToListAsync();
+            List<ProjectApplicationDto> projectApp = _mapper.Map<List<ProjectApplicationDto>>(models);
+            // Return data
+            resp.Data = projectApp;
+            return Ok(resp);
         }
 
         // GET: api/ProjectApplications/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProjectApplication>> GetProjectApplication(int id)
+        public async Task<ActionResult<CommonResponse<ProjectApplication>>> GetProjectApplication(int id)
         {
-            var projectApplication = await _context.ProjectApplications.FindAsync(id);
-
-            if (projectApplication == null)
+            // Create response object
+            CommonResponse<ProjectApplicationDto> respons = new CommonResponse<ProjectApplicationDto>();
+            var projectApp = await _context.Portfolios.FindAsync(id);
+            if (projectApp == null)
             {
-                return NotFound();
+                respons.Error = new Error { Status = 404, Message = "Cannot find an application with that Id" };
+                return NotFound(respons);
             }
-
-            return projectApplication;
+            // Map 
+            respons.Data = _mapper.Map<ProjectApplicationDto>(projectApp);
+            return Ok(respons);
         }
 
-        // PUT: api/ProjectApplications/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProjectApplication(int id, ProjectApplication projectApplication)
+        [HttpPost]
+        public async Task<ActionResult<CommonResponse<ProjectApplicationDto>>> PostProjectApplication(ProjectApplicationCreateDto post)
         {
-            if (id != projectApplication.Id)
-            {
-                return BadRequest();
-            }
+            // Make CommonResponse object to use
+            CommonResponse<ProjectApplicationDto> resp = new CommonResponse<ProjectApplicationDto>();
 
-            _context.Entry(projectApplication).State = EntityState.Modified;
+            // Map to model class
+            var model = _mapper.Map<ProjectApplication>(post);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProjectApplicationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            // Add to db
+            _context.ProjectApplications.Add(model);
+            await _context.SaveChangesAsync();
 
-            return NoContent();
+            var l = await _context.ProjectApplications.Include(l => l.User).FirstOrDefaultAsync(l => l.Id == model.Id);
+            resp.Data = _mapper.Map<ProjectApplicationDto>(l);
+
+            return Ok(resp);
         }
+
 
         // DELETE: api/ProjectApplications/5
         [HttpDelete("{id}")]

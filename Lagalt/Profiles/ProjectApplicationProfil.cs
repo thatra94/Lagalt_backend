@@ -13,7 +13,7 @@ namespace Lagalt.Profiles
         public ProjectApplicationProfil()
         {
             CreateMap<ProjectApplicationDto, ProjectApplication>().ReverseMap();
-            CreateMap<ProjectApplicationUserDto, ProjectApplication>().ReverseMap();
+            CreateMap<ProjectApplicationCreateDto, ProjectApplication>().ReverseMap();
 
         }
     }
