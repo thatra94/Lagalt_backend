@@ -39,20 +39,24 @@ namespace Lagalt.Controllers
             return Ok(resp);
         }
 
-        // GET: api/ProjectApplications/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CommonResponse<ProjectApplication>>> GetProjectApplication(int id)
+        //Get applications for project
+        [HttpGet("{projectId}")]
+        public async Task<ActionResult<CommonResponse<ProjectApplicationShort>>> GetApplicationForProject(int projectId)
         {
-            // Create response object
-            CommonResponse<ProjectApplicationDto> respons = new CommonResponse<ProjectApplicationDto>();
-            var projectApp = await _context.Portfolios.FindAsync(id);
-            if (projectApp == null)
+            // Make response object
+            CommonResponse<IEnumerable<ProjectApplicationShort>> respons = new CommonResponse<IEnumerable<ProjectApplicationShort>>();
+            Project project = await _context.Projects.Include(p => p.ProjectApplications).Where(u => u.Id == projectId).FirstOrDefaultAsync();
+            if (project == null)
             {
-                respons.Error = new Error { Status = 404, Message = "Cannot find an application with that Id" };
+                respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
                 return NotFound(respons);
             }
-            // Map 
-            respons.Data = _mapper.Map<ProjectApplicationDto>(projectApp);
+            foreach (ProjectApplication pa in project.ProjectApplications)
+            {
+                pa.Project = null;
+            }
+            // Map to dto
+            respons.Data = _mapper.Map<List<ProjectApplicationShort>>(project.ProjectApplications);
             return Ok(respons);
         }
 

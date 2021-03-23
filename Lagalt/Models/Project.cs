@@ -33,5 +33,7 @@ namespace Lagalt.Models
         public ICollection<UserComment> UserComments { get; set; }
         public ICollection<Theme> Themes { get; set; }
         public ICollection<Skill> Skills { get; set; }
+        public ICollection<ProjectApplication> ProjectApplications { get; set; }
+
     }
 }
