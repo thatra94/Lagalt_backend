@@ -22,6 +22,7 @@ namespace Lagalt.DB
         public DbSet<Theme> Themes { get; set; }
         public DbSet<Link> Links { get; set; }
         public DbSet<Portfolio> Portfolios { get; set; }
+        public DbSet<UserHistory> UserHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -35,6 +36,7 @@ namespace Lagalt.DB
             modelBuilder.Entity<Portfolio>().HasData(Seeder.SeedPortfolio());
             modelBuilder.Entity<Link>().HasData(SeederHelper.SeedLinks());
             modelBuilder.Entity<UserComment>().HasData(SeederHelper.SeedUserComments());
+            modelBuilder.Entity<UserHistory>().HasData(Seeder.SeedUserHistory());
 
             //Relationship
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 1, UsersId = 1 });
