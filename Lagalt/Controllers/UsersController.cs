@@ -97,6 +97,7 @@ namespace Lagalt.Controllers
             return NoContent();
         }
 
+
         // POST: api/Users
         [HttpPost]
         public async Task<ActionResult<CommonResponse<UserDto>>> PostUser(UserCreateDto user)
