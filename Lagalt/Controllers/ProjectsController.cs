@@ -58,27 +58,19 @@ namespace Lagalt.Controllers
         // GET: api/Projects/5/comments
         // Get all comments related to a project
         [HttpGet("{id}/comments")]
-        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectCommentsDto>>>> GetProjectComments(int id)
+        public async Task<ActionResult<CommonResponse<IEnumerable<ProjectCommentsDto>>>> GetUserComments(int id)
         {
             CommonResponse<IEnumerable<ProjectCommentsDto>> response = new CommonResponse<IEnumerable<ProjectCommentsDto>>();
+            // Maps from model to Dto
+            var commentModel = await _context.UserComments.Include(uc => uc.User).Where(u => u.ProjectId == id).ToListAsync();
+            List<ProjectCommentsDto> comments = _mapper.Map<List<ProjectCommentsDto>>(commentModel);
 
-            var project = await _context.Projects.Include(p => p.UserComments).
-                                                      Include(p => p.Users).
-                                                      Where(p => p.Id == id).FirstOrDefaultAsync();
-            if (project == null)
+            foreach (ProjectCommentsDto comment in comments)
             {
-                response.Error = new Error { Status = 404, Message = "A project with that id could not be found." };
-                return NotFound(response);
+                comment.UserName = comment.UserName;
             }
 
-            // Map to dto
-            List<ProjectCommentsDto> comments = _mapper.Map<List<ProjectCommentsDto>>(project.UserComments);
-            
-            foreach(ProjectCommentsDto comment in comments)
-            { 
-                comment.UserName = comment.UserName;
-            } 
-
+            // Return data
             response.Data = comments;
             return Ok(response);
         }
@@ -264,7 +256,54 @@ namespace Lagalt.Controllers
             return _context.Projects.Any(e => e.Id == id);
         }
 
+        // Get api/Projects/project=foo
+        // Project name and more maybe later
+        [HttpGet("search/project={searchString}")]
+        public async Task<ActionResult<CommonResponse<IEnumerable<ProjectSkillsDto>>>> GetProjectsBySearch(string searchString)
+        {
+            CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
+            var projectModel = await _context.Projects.Include(p => p.Skills)
+                                                      .Include(p => p.Industry)
+                                                      .Include(p => p.Themes)
+                                                      .Where(p => p.Name.Contains(searchString) || p.Description.Contains(searchString))
+                                                      .ToListAsync();
 
+            // Map skills and industry
+            List<ProjectSkillsDto> projects = _mapper.Map<List<ProjectSkillsDto>>(projectModel);
+            foreach (ProjectSkillsDto project in projects)
+            {
+                project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
+                project.Themes = _mapper.Map<List<ThemeDto>>(project.Themes);
+                project.IndustryName = project.IndustryName;
+            }
+            // Return data
+            response.Data = projects;
+            return Ok(response);
+        }
 
+        // Get api/Projects/industry=foo
+        // Project name and more maybe later
+        [HttpGet("filter/industry={filterString}")]
+        public async Task<ActionResult<CommonResponse<IEnumerable<ProjectSkillsDto>>>> GetProjectsByIndustry(string filterString)
+        {
+            CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
+            var projectModel = await _context.Projects.Include(p => p.Skills)
+                                                      .Include(p => p.Industry)
+                                                      .Include(p => p.Themes)
+                                                      .Where(p => p.Industry.Name == filterString)
+                                                      .ToListAsync();
+
+            // Map skills and industry
+            List<ProjectSkillsDto> projects = _mapper.Map<List<ProjectSkillsDto>>(projectModel);
+            foreach (ProjectSkillsDto project in projects)
+            {
+                project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
+                project.Themes = _mapper.Map<List<ThemeDto>>(project.Themes);
+                project.IndustryName = project.IndustryName;
+            }
+            // Return data
+            response.Data = projects;
+            return Ok(response);
+        }
     }
 }
