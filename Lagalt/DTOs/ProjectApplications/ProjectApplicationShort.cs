@@ -8,6 +8,8 @@ namespace Lagalt.DTOs.ProjectApplications
     public class ProjectApplicationShort
     {
         public int UserId { get; set; }
+        public string UserName { get; set; }
+
         public string MotivationText { get; set; }
         public string Status { get; set; }  //Pending, accepted / declined 
     }

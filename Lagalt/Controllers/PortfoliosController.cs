@@ -10,6 +10,7 @@ using Lagalt.Models;
 using AutoMapper;
 using Lagalt.ResponseModel;
 using Lagalt.DTOs.Portfolio;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lagalt.Controllers
 {
