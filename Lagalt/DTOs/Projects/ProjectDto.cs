@@ -18,8 +18,8 @@ namespace Lagalt.DTOs
         public string Status { get; set; }
         public int IndustryId { get; set; }
 
-        public ICollection<SkillDto> Skills { get; set; }
-        public ICollection<ThemeDto> Themes { get; set; }
-        public ICollection<LinkDto> Links { get; set; }
+        public ICollection<SkillCreateDto> Skills { get; set; }
+        public ICollection<ThemeCreateDto> Themes { get; set; }
+        public ICollection<LinkCreateDto> Links { get; set; }
     }
 }

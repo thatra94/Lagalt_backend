@@ -14,6 +14,7 @@ using Lagalt.DTOs.Projects;
 using Lagalt.DTOs.Industries;
 using Lagalt.DTOs.Themes;
 using Lagalt.DTOs.UserComments;
+using Lagalt.DTOs.Links;
 
 namespace Lagalt.Controllers
 {
@@ -111,15 +112,74 @@ namespace Lagalt.Controllers
         // PUT: api/Projects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProject(int id, ProjectUpdateDto project)
+        public async Task<IActionResult> PutProject(int id, ProjectDto projectDto)
         {
             CommonResponse<ProjectUpdateDto> response = new CommonResponse<ProjectUpdateDto>();
 
+            Project project = await _context.Projects.Include(s => s.Skills)
+                                               .Include(t => t.Themes)
+                                               .Include(l => l.Links)
+                                               .FirstOrDefaultAsync(u => u.Id == id);
+           // Check if Id exists
             if (id != project.Id)
             {
-                response.Error = new Error { Status = 400, Message = "There was a mismatch with the provided id and the object." };
+                response.Error = new Error { Status = 400, Message = "A project with that Id could not be found." };
                 return BadRequest(response);
             }
+            // Mapping project attributes
+            project.Name = projectDto.Name;
+            project.Description = projectDto.Description;
+            project.ImageUrl = projectDto.ImageUrl;
+            project.Status = projectDto.Status;
+
+            // Mapping Skills
+            project.Skills.Clear();
+            foreach(SkillCreateDto skillName in projectDto.Skills)
+            {
+                Skill skill = await _context.Skills.Where(s=> s.Name == skillName.Name).FirstOrDefaultAsync();
+                if(skill != null)
+                {
+                    project.Skills.Add(skill);
+                }
+                else
+                {
+                    skill = _mapper.Map<Skill>(skillName);
+                    project.Skills.Add(skill);
+                }
+            }
+
+            // Mapping Themes
+            project.Themes.Clear();
+            foreach (ThemeCreateDto themeName in projectDto.Themes)
+            {
+                Theme theme = await _context.Themes.Where(t => t.Name == themeName.Name).FirstOrDefaultAsync();
+                if (theme != null)
+                {
+                    project.Themes.Add(theme);
+                }
+                else
+                {
+                    theme = _mapper.Map<Theme>(themeName);
+                    project.Themes.Add(theme);
+                }
+            }
+
+            // Mapping Links
+            project.Links.Clear();
+            foreach (LinkCreateDto linkName in projectDto.Links)
+            {
+                Link link = await _context.Links.Where(l => l.Name == linkName.Name).FirstOrDefaultAsync();
+                if (link != null)
+                {
+                    project.Links.Add(link);
+                }
+                else
+                {
+                    link = _mapper.Map<Link>(linkName);
+                    project.Links.Add(link);
+                }
+            }
+
             // Maps to project model
             Project projectModel = _mapper.Map<Project>(project);
             _context.Entry(projectModel).State = EntityState.Modified;
@@ -143,7 +203,8 @@ namespace Lagalt.Controllers
             return NoContent();
         }
 
-        // POST: api/Projects
+        // POST: api/Projects 
+        // Post New project
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<CommonResponse<ProjectDto>>> PostProject(ProjectCreateDto project)

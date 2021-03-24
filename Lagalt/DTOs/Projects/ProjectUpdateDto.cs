@@ -14,6 +14,9 @@ namespace Lagalt.DTOs.Projects
         public string ImageUrl { get; set; }
         public string Status { get; set; }
         public int IndustryId { get; set; }
-        public int UserId { get; set; }
+        // public int UserId { get; set; } Probably not needed
+        public ICollection<LinkCreateDto> Links { get; set; }
+        public ICollection<ThemeCreateDto> Themes { get; set; }
+        public ICollection<SkillCreateDto> Skills { get; set; }
     }
 }
