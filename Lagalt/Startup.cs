@@ -69,6 +69,7 @@ namespace Lagalt
                     IssuerSigningKeyResolver = (token, securityToken, kid, parameters) =>
                     {
                         var client = new HttpClient();
+
                         var keyuri = Configuration["TokenSecrets:KeyURI"];
                         //Retrieves the keys from keycloak instance to verify token
                         var response = client.GetAsync(keyuri).Result;
@@ -84,20 +85,18 @@ namespace Lagalt
                     ValidAudience = "account",
                 };
             });
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseAuthentication();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Lagalt v1")); 
             }
-
             app.UseHttpsRedirection();
 
             app.UseRouting();

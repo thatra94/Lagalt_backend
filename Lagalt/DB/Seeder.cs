@@ -1,4 +1,5 @@
-﻿using Lagalt.Models;
+﻿using Lagalt.DTOs.UserHistories;
+using Lagalt.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -230,42 +231,42 @@ namespace Lagalt.DB
                 new UserHistory
                 {
                     Id = 1,
-                    HistoryType = "user-project-click",
+                    TypeHistory = HistoryType.ProjectClickedOn,
                     UserId = 1,
                     ProjectId = 1
                 },
                    new UserHistory
                 {
                     Id = 2,
-                    HistoryType = "user-project-seen",
+                    TypeHistory = HistoryType.ProjectContributed,
                     UserId = 1,
                     ProjectId = 1
                 },
                    new UserHistory
                 {
                     Id = 3,
-                    HistoryType =  "user-project-seen",
+                    TypeHistory =  HistoryType.ProjectClickedOn,
                     UserId = 1,
                     ProjectId = 2
                 },
                    new UserHistory
                 {
                     Id = 4,
-                    HistoryType = "user-project-applied",
+                    TypeHistory = HistoryType.ProjectAppliedTo,
                     UserId = 1,
                     ProjectId = 3
                 },
                    new UserHistory
                 {
                     Id = 5,
-                    HistoryType = "user-project-applied",
+                    TypeHistory = HistoryType.ProjectSeenFromMain,
                     UserId = 1,
                     ProjectId = 2
                 },
                    new UserHistory
                 {
                     Id = 6,
-                    HistoryType = "user-project-click",
+                    TypeHistory =  HistoryType.ProjectSeenFromMain,
                     UserId = 1,
                     ProjectId = 7
                 }
