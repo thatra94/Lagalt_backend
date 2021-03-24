@@ -12,9 +12,7 @@ using AutoMapper;
 using Lagalt.ResponseModel;
 using Lagalt.DTOs;
 using Lagalt.DTOs.Users;
-using Lagalt.DTOs.Portfolio;
 using Lagalt.DTOs.Projects;
-using Lagalt.DTOs.Themes;
 
 namespace Lagalt.Controllers
 {
@@ -62,42 +60,6 @@ namespace Lagalt.Controllers
             respons.Data = _mapper.Map<UserDto>(userModel);
             return Ok(respons);
         }
-
-        // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{userId}")]
-        public async Task<IActionResult> PutUser(string userId, UserUpdateDto user)
-        {
-            // Create response object
-            CommonResponse<UserUpdateDto> resp = new CommonResponse<UserUpdateDto>();
-
-            if (userId != user.UserId)
-            {
-                resp.Error = new Error { Status = 400, Message = "There was a mismatch with the provided id and the object." };
-                return BadRequest(resp);
-            }
-            _context.Entry(_mapper.Map<User>(user)).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(userId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-
         // POST: api/Users
         [HttpPost]
         public async Task<ActionResult<CommonResponse<UserDto>>> PostUser(UserCreateDto user)
@@ -117,6 +79,7 @@ namespace Lagalt.Controllers
             // Try catch
             try
             {
+                await _context.SaveChangesAsync();
                 _context.Users.Add(userModel);
                 await _context.SaveChangesAsync();
             }
@@ -201,40 +164,36 @@ namespace Lagalt.Controllers
             return Ok(respons);
         }
 
-        [HttpPut("{userId}/Skills")]
-        public async Task<IActionResult> UpdateSkillsInUser(string userId, SkillCreateDto skillIn)
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> PutUserWithSkills(string userId, UserUpdateDto user)
         {
-            // Make response object
-            CommonResponse<IEnumerable<SkillCreateDto>> respons = new CommonResponse<IEnumerable<SkillCreateDto>>();
+            // Create response object
+            CommonResponse<UserUpdateDto> respons = new CommonResponse<UserUpdateDto>();
+            User userModel = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync(u => u.UserId == userId);
 
-            User user = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync(u => u.UserId == userId);
-            if (user == null)
+            if (userId != user.UserId)
             {
-                respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
-                return NotFound(respons);
+                respons.Error = new Error { Status = 400, Message = "There was a mismatch with the provided id and the object." };
+                return BadRequest(respons);
             }
-            List<Skill> exSkills = user.Skills.ToList();
-            foreach (Skill old in exSkills)
+            userModel.Description = user.Description;
+            userModel.ImageUrl = user.ImageUrl;
+
+            foreach (SkillCreateDto skillName in user.Skills)
             {
-                if (skillIn.Name.Contains(old.Name))
+                Skill skill = await _context.Skills.Where(s => s.Name == skillName.Name).FirstOrDefaultAsync();
+                if (skill == null)
                 {
-                    user.Skills.Remove(old);
+                    skill = _mapper.Map<Skill>(skillName);
+                    userModel.Skills.Add(skill);
                 }
+                 userModel.Skills.Add(skill);
             }
-
-            Skill skillModel = await _context.Skills.FirstOrDefaultAsync();
-            skillModel = _mapper.Map<Skill>(skillIn);
-            user.Skills.Add(skillModel);
-
+            // Save changes to commit to db
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
-
-
-
-
-
 
     }
 
