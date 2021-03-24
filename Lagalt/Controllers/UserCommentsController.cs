@@ -103,9 +103,9 @@ namespace Lagalt.Controllers
         // POST: api/UserComments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CommonResponse<UserCommentCreateDto>>> PostUserComment(UserCommentCreateDto userComment)
+        public async Task<ActionResult<CommonResponse<UserCommentReadDto>>> PostUserComment(UserCommentCreateDto userComment)
         {
-            CommonResponse<UserCommentDto> response = new CommonResponse<UserCommentDto>();
+            CommonResponse<UserCommentReadDto> response = new CommonResponse<UserCommentReadDto>();
 
             if(!ModelState.IsValid)
             {
@@ -130,7 +130,11 @@ namespace Lagalt.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
             // Map to dto
-            response.Data = _mapper.Map<UserCommentDto>(commentModel);
+            commentModel = await _context.UserComments.Include(uc => uc.User).FirstOrDefaultAsync(i => i.Id == commentModel.Id);
+            UserCommentReadDto comment = _mapper.Map<UserCommentReadDto>(commentModel);
+
+            comment.UserName = comment.UserName;
+            response.Data = comment;
 
             return CreatedAtAction("GetUserComment", new { id = response.Data.Id }, response);
         }
