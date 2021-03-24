@@ -10,7 +10,6 @@ namespace Lagalt.Profiles
         {
             CreateMap<SkillDto, Skill>().ReverseMap();
             CreateMap<SkillCreateDto, Skill>().ReverseMap();
-
         }
     }
 }

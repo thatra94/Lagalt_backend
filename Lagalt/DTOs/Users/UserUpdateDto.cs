@@ -1,4 +1,5 @@
 ﻿using Lagalt.DTOs.Portfolio;
+using Lagalt.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,8 @@ namespace Lagalt.DTOs.Users
     {
         public string UserId { get; set; }
         public string? ImageUrl { get; set; }
-        public string? Description { get; set; }
-        public ICollection<SkillCreateDto>? Skills { get; set; }
-        public ICollection<PortfolioUser>? Portofolios { get; set; }
-
+        public string? Description { get; set; } 
+        public List<SkillCreateDto>? Skills { get; set; }
+    
     }
 }

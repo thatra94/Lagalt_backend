@@ -38,7 +38,7 @@ namespace Lagalt.DB
             modelBuilder.Entity<UserComment>().HasData(SeederHelper.SeedUserComments());
             modelBuilder.Entity<UserHistory>().HasData(Seeder.SeedUserHistory());
 
-            //Relationship
+           //Relationship
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 1, UsersId = 1 });
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 2, UsersId = 1 });
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 4, UsersId = 1 });
@@ -63,7 +63,7 @@ namespace Lagalt.DB
             modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 9, UsersId = 29 });
             modelBuilder.Entity("ProjectUser").HasData(new { ProjectsId = 9, UsersId = 13 });
 
-            // Relationships for ProjectSkill
+           // Relationships for ProjectSkill
             modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 1, SkillsId = 8 });
             modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 1, SkillsId = 11 });
             modelBuilder.Entity("ProjectSkill").HasData(new { ProjectsId = 1, SkillsId = 13 });
