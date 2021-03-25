@@ -47,11 +47,41 @@ namespace Lagalt.Controllers
             {
                 project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
                 project.Themes = _mapper.Map<List<ThemeDto>>(project.Themes);
-                // project.Industry = _mapper.Map<IndustryDto>(project.Industry);
                 project.IndustryName = project.IndustryName;
             }
             // Return data
             response.Data = projects;
+            return Ok(response);
+        }
+    
+        // GET: api/Projects/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectViewDto>>>> GetProjectInProjectView(int id)
+        {
+            CommonResponse<ProjectViewDto> response = new CommonResponse<ProjectViewDto>();
+
+            var projectModel = await _context.Projects.Include(s => s.Skills)
+                                                   .Include(i => i.Industry)
+                                                   .Include(t => t.Themes)
+                                                   .Include(l => l.Links)
+                                                   .Include(u => u.Users)
+                                                   .FirstOrDefaultAsync(i => i.Id == id);
+
+
+            if (projectModel == null)
+            {
+                response.Error = new Error { Status = 404, Message = "Cannot find a project with that Id" };
+                return NotFound(response);
+            }
+            //Map to Dto
+            ProjectViewDto project = _mapper.Map<ProjectViewDto>(projectModel);
+            project.IndustryName = project.IndustryName;
+            // Get username to display creator name in response
+            var user = await _context.Users.Where(u => u.Id == project.UserId).FirstAsync();
+            project.UserName = user.Name;
+
+            response.Data = project;
+
             return Ok(response);
         }
 
@@ -75,32 +105,6 @@ namespace Lagalt.Controllers
             return Ok(response);
         }
 
-        // GET: api/Projects/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectViewDto>>>> GetProjectInProjectView(int id)
-        {
-            CommonResponse<ProjectViewDto> response = new CommonResponse<ProjectViewDto>();
-
-            var projectModel = await _context.Projects.Include(s => s.Skills)
-                                                   .Include(i => i.Industry)
-                                                   .Include(t => t.Themes)
-                                                   .Include(l => l.Links)
-                                                   .FirstOrDefaultAsync(i => i.Id == id);
-
-            if (projectModel == null)
-            {
-                response.Error = new Error { Status = 404, Message = "Cannot find a project with that Id" };
-                return NotFound(response);
-            }
-            //Map to Dto
-            ProjectViewDto project = _mapper.Map<ProjectViewDto>(projectModel);
-            project.IndustryName = project.IndustryName;
-
-            response.Data = project;
-
-            return Ok(response);
-        } 
-     
         // PUT: api/Projects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -281,7 +285,7 @@ namespace Lagalt.Controllers
             return Ok(response);
         }
 
-        // Get api/Projects/industry=foo
+        // Get api/Projects/filter/industry=foo
         // Project name and more maybe later
         [HttpGet("filter/industry={filterString}")]
         public async Task<ActionResult<CommonResponse<IEnumerable<ProjectSkillsDto>>>> GetProjectsByIndustry(string filterString)
