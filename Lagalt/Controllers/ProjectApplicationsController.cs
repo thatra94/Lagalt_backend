@@ -46,7 +46,6 @@ namespace Lagalt.Controllers
             // Make response object
             CommonResponse<IEnumerable<ProjectApplicationShort>> respons = new CommonResponse<IEnumerable<ProjectApplicationShort>>();
             var project = await _context.ProjectApplications.Include(l => l.User).Where(p => p.Project.Id == projectId).ToListAsync(); 
-
             if (project == null)
             {
                 respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };

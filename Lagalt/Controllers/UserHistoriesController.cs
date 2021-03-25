@@ -25,24 +25,32 @@ namespace Lagalt.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<CommonResponse<IEnumerable<UserHistoryDto>>>> GetUserHistories()
+        {
+            // Create response object
+            CommonResponse<IEnumerable<UserHistoryDto>> respons = new CommonResponse<IEnumerable<UserHistoryDto>>();
+            // Fetch list of model class and map to dto
+            var modelUser = await _context.UserHistories.Where(t => t.TypeHistory == HistoryType.ProjectClickedOn).ToListAsync();
+            List<UserHistoryDto> users = _mapper.Map<List<UserHistoryDto>>(modelUser);
+            // Return the data
+            respons.Data = users;
+            return Ok(respons);
+        }
         //Get history for user
         [HttpGet("{userId}")]
         public async Task<ActionResult<CommonResponse<UserHistoryDto>>> GetUserHistoryForUser(int userId)
         {
             // Make response object
             CommonResponse<IEnumerable<UserHistoryDto>> respons = new CommonResponse<IEnumerable<UserHistoryDto>>();
-            User user = await _context.Users.Include(u => u.UserHistories).Where(u => u.Id == userId).FirstOrDefaultAsync();
-            if (user == null)
+            var uh = await _context.UserHistories.Where(u => u.UserId == userId).ToListAsync();
+            if (uh == null)
             {
                 respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
                 return NotFound(respons);
             }
-            foreach (UserHistory ua in user.UserHistories)
-            {
-                ua.User = null;
-            }
             // Map to dto
-            respons.Data = _mapper.Map<List<UserHistoryDto>>(user.UserHistories);
+            respons.Data = _mapper.Map<List<UserHistoryDto>>(uh);
             return Ok(respons);
         }
 
@@ -52,10 +60,8 @@ namespace Lagalt.Controllers
         {
             // Make CommonResponse object to use
             CommonResponse<UserHistoryDto> resp = new CommonResponse<UserHistoryDto>();
-
             // Map to model class
             var model = _mapper.Map<UserHistory>(history);
-
             // Add to db
             _context.UserHistories.Add(model);
             await _context.SaveChangesAsync();
@@ -75,7 +81,6 @@ namespace Lagalt.Controllers
             {
                 return NotFound();
             }
-
             _context.UserHistories.Remove(userHistory);
             await _context.SaveChangesAsync();
 
