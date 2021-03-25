@@ -28,7 +28,6 @@ namespace Lagalt.Controllers
             _context = context;
             _mapper = mapper;
         }
-
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<CommonResponse<IEnumerable<UserDto>>>> GetUsers()
@@ -40,6 +39,24 @@ namespace Lagalt.Controllers
             List<UserDto> users = _mapper.Map<List<UserDto>>(modelUser);
             // Return the data
             respons.Data = users;
+            return Ok(respons);
+        }
+
+        // GET: api/User/5
+        [HttpGet("{userId}/hidden=true")]
+        public async Task<ActionResult<CommonResponse<UserShortDto>>> GetUserHiddden(string userId)
+        {
+            // Create response object
+            CommonResponse<UserShortDto> respons = new CommonResponse<UserShortDto>();
+            var userModel = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (userModel == null)
+            {
+                respons.Error = new Error { Status = 404, Message = "Cannot find a user with that Id" };
+                return NotFound(respons);
+            }
+            // Map 
+            respons.Data = _mapper.Map<UserShortDto>(userModel);
             return Ok(respons);
         }
 
@@ -79,7 +96,6 @@ namespace Lagalt.Controllers
             // Try catch
             try
             {
-                await _context.SaveChangesAsync();
                 _context.Users.Add(userModel);
                 await _context.SaveChangesAsync();
             }
@@ -104,7 +120,6 @@ namespace Lagalt.Controllers
             {
                 return NotFound();
             }
-
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
@@ -194,8 +209,5 @@ namespace Lagalt.Controllers
 
             return NoContent();
         }
-
     }
-
-
 }

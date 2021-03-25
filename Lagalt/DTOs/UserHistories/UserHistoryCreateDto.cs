@@ -7,7 +7,7 @@ namespace Lagalt.DTOs.UserHistories
 {
     public class UserHistoryCreateDto
     {
-        public HistoryType Type { get; set; }
+        public HistoryType TypeHistory { get; set; }
         // Foreign Keys
         public int UserId { get; set; }
         public int ProjectId { get; set; }

@@ -45,18 +45,14 @@ namespace Lagalt.Controllers
         {
             // Make response object
             CommonResponse<IEnumerable<ProjectApplicationShort>> respons = new CommonResponse<IEnumerable<ProjectApplicationShort>>();
-            Project project = await _context.Projects.Include(p => p.ProjectApplications).Where(u => u.Id == projectId).FirstOrDefaultAsync();
+            var project = await _context.ProjectApplications.Include(l => l.User).Where(p => p.Project.Id == projectId).ToListAsync(); 
             if (project == null)
             {
                 respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
                 return NotFound(respons);
             }
-            foreach (ProjectApplication pa in project.ProjectApplications)
-            {
-                pa.Project = null;
-            }
             // Map to dto
-            respons.Data = _mapper.Map<List<ProjectApplicationShort>>(project.ProjectApplications);
+            respons.Data = _mapper.Map<List<ProjectApplicationShort>>(project);
             return Ok(respons);
         }
 
@@ -65,10 +61,8 @@ namespace Lagalt.Controllers
         {
             // Make CommonResponse object to use
             CommonResponse<ProjectApplicationDto> resp = new CommonResponse<ProjectApplicationDto>();
-
             // Map to model class
             var model = _mapper.Map<ProjectApplication>(post);
-
             // Add to db
             _context.ProjectApplications.Add(model);
             await _context.SaveChangesAsync();

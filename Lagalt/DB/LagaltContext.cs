@@ -1,4 +1,5 @@
-﻿using Lagalt.Models;
+﻿using Lagalt.DTOs.UserHistories;
+using Lagalt.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -37,8 +38,10 @@ namespace Lagalt.DB
             modelBuilder.Entity<Link>().HasData(SeederHelper.SeedLinks());
             modelBuilder.Entity<UserComment>().HasData(SeederHelper.SeedUserComments());
             modelBuilder.Entity<UserHistory>().HasData(Seeder.SeedUserHistory());
+            modelBuilder.Entity<UserHistory>().Property(u => u.TypeHistory)
+                .HasConversion(t => t.ToString(), t => (HistoryType)Enum.Parse(typeof(HistoryType), t));
 
-           //Relationship
+            //Relationship
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 1, UsersId = 1 });
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 2, UsersId = 1 });
             modelBuilder.Entity("SkillUser").HasData(new { SkillsId = 4, UsersId = 1 });

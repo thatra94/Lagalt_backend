@@ -7,9 +7,9 @@ namespace Lagalt.DTOs.UserHistories
 {
     public enum HistoryType
     {
-        ProjectClickedOn = 1,
-        ProjectAppliedTo = 2,
-        ProjectContributed = 3,
-        ProjectSeenFromMain = 4
+        ProjectClickedOn,
+        ProjectAppliedTo,
+        ProjectContributed,
+        ProjectSeenFromMain, 
     }
 }
