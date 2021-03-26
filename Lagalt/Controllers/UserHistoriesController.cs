@@ -13,6 +13,7 @@ using Lagalt.ResponseModel;
 using Lagalt.DTOs.Projects;
 using Lagalt.DTOs;
 using Lagalt.DTOs.Themes;
+using System.Text.RegularExpressions;
 
 namespace Lagalt.Controllers
 {
@@ -53,22 +54,28 @@ namespace Lagalt.Controllers
 
             var whichP = await _context.Projects.Where(p => p.Id == uh.ProjectId).Include(p => p.Themes).FirstAsync();
 
+           var an = await _context.Themes.Include(p => p.Projects.Where(p => p.Id == uh.ProjectId)).FirstAsync();
             // Make CommonResponse object to use
             CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
-            var projectModel = await _context.Projects.Include(p => p.Themes)
+            var projectModel = await _context.Projects
                                                        .Include(p => p.Skills)
                                                       .Include(p => p.Industry)
                                                        .Include(p => p.Industry)
-                                                       .OrderByDescending(p => p.Themes == whichP.Themes)
-                                                      .ToListAsync();
+                                                       .Include(p => p.Themes)
+                                                       .GroupBy(p => p.Themes.Where
+                                                         (p => p.Name.StartsWith(whichP.Name)))
 
+                                                   //     .Where(p => p.Themes.Where(p => p.Id == 1))
+                                                       .ToListAsync();
+
+          //  var last = await _context.Projects.OrderByDescending
+            //Where(p => p.Themes.Where(p => p.Name.StartsWith("Web")))
             // Map skills and industry
             List<ProjectSkillsDto> projects = _mapper.Map<List<ProjectSkillsDto>>(projectModel);
             foreach (ProjectSkillsDto project in projects)
             {
                 project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
                 project.Themes = _mapper.Map<List<ThemeDto>>(project.Themes);
-                // project.Industry = _mapper.Map<IndustryDto>(project.Industry);
                 project.IndustryName = project.IndustryName;
             }
             // Return data
@@ -135,8 +142,6 @@ namespace Lagalt.Controllers
 
             return Ok(resp);
         }
-
-
         // post: api/Projects/5
         [HttpPost("{id}")]
         public async Task<ActionResult<IEnumerable<CommonResponse<ProjectViewDto>>>> GetProjectInProjectView(int id, int userId)

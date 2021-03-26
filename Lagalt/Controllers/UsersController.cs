@@ -190,7 +190,7 @@ namespace Lagalt.Controllers
             return NoContent();
         }
         // GET: api/User/5/UserProfil/UserId
-        [HttpGet("api/{user}/userProfil/{userId}")]
+        [HttpPost("/{user}")]
         public async Task<ActionResult<CommonResponse<UserProfilDto>>> GetUserProfil(int user, string userId)
         {
             // Create response object
@@ -230,5 +230,6 @@ namespace Lagalt.Controllers
             // Map 
             return Ok(respons);
         }
+
     }
 }
