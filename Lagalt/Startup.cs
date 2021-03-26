@@ -37,7 +37,8 @@ namespace Lagalt
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Lagalt", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Lagalt", Version = "v1", Description ="Lagalt application API" });
+                c.EnableAnnotations();
             });
             services.AddSwaggerGenNewtonsoftSupport();
 
