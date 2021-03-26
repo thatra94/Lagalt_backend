@@ -42,21 +42,25 @@ namespace Lagalt.Controllers
             respons.Data = users;
             return Ok(respons);
         }
-     /*   [HttpGet]
+        [HttpGet("/project/{userId}")]
         public async Task<ActionResult<IEnumerable<CommonResponse<ProjectSkillsDto>>>> GetProjectsWithSkills(int userId)
         {
+            var uh = await _context.UserHistories.Where(u => u.UserId == userId).GroupBy(p => p.ProjectId).Select(g => new UserHistory
+            {
+                ProjectId = g.Key,
+                Id = g.Count()
+            }).FirstOrDefaultAsync();
+
+            var whichP = await _context.Projects.Where(p => p.Id == uh.ProjectId).Include(p => p.Themes).FirstAsync();
+
             // Make CommonResponse object to use
             CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
-            var projectModel = await _context.Projects.Include(p => p.Skills)
+            var projectModel = await _context.Projects.Include(p => p.Themes)
+                                                       .Include(p => p.Skills)
                                                       .Include(p => p.Industry)
-                                                      .Include(p => p.Themes)
-                                                      .GroupBy(p => p.Industry)
-                                                      .Select(u => new
-                                                      {
-                                                          
-                                                      })
+                                                       .Include(p => p.Industry)
+                                                       .OrderByDescending(p => p.Themes == whichP.Themes)
                                                       .ToListAsync();
-
 
             // Map skills and industry
             List<ProjectSkillsDto> projects = _mapper.Map<List<ProjectSkillsDto>>(projectModel);
@@ -71,17 +75,7 @@ namespace Lagalt.Controllers
             response.Data = projects;
             return Ok(response);
         }
-     */
-        /*
-         * ar GroupedTags = Tags.GroupBy(c => c.Tag)
-    .Select(g => new 
-    { 
-        name = g.Key, 
-        count = g.Count(), 
-        date = g.Max(x => x.CreatedDate)
-    })
-    .OrderBy(c => c.name);
-        */
+
         //Get history for user
         [HttpGet("{userId}")]
         public async Task<ActionResult<CommonResponse<UserHistoryDto>>> GetUserHistoryForUser(int userId)
@@ -97,7 +91,8 @@ namespace Lagalt.Controllers
                     Id = g.Count()
                 }).FirstOrDefaultAsync();
 
-        //    var pr = await _context.Projects.Include(t => t.Themes).Where(p => p.Themes.
+            var pr = await _context.Projects.Include(t => t.Themes).Where(p => p.Id == uh.ProjectId).ToListAsync();
+
             //Select(t => t.id).FirstAsync();
                 
             //    Where(u => u.Id == uh.ProjectId).FirstAsync();
