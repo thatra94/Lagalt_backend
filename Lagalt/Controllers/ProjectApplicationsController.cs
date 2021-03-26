@@ -61,8 +61,8 @@ namespace Lagalt.Controllers
         {
             // Make CommonResponse object to use
             CommonResponse<ProjectApplicationDto> resp = new CommonResponse<ProjectApplicationDto>();
-            // Map to model class
             var model = _mapper.Map<ProjectApplication>(post);
+            model.Status = "Pending";
             // Add to db
             _context.ProjectApplications.Add(model);
             await _context.SaveChangesAsync();
@@ -73,6 +73,23 @@ namespace Lagalt.Controllers
             return Ok(resp);
         }
 
+       [HttpPut]
+        public async Task<IActionResult> PutProjectToUser(ProjectAppResponsDto post)
+        {
+            // Make CommonResponse object to use
+            CommonResponse<ProjectAppResponsDto> resp = new CommonResponse<ProjectAppResponsDto>();
+
+            Project pro = await _context.Projects.Include(u => u.Users).FirstOrDefaultAsync(p => p.Id == post.ProjectId);
+            User newUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == post.UserId);
+            ProjectApplication pr =
+                await _context.ProjectApplications.Where(p => p.ProjectId == post.ProjectId).FirstOrDefaultAsync();
+            pr.Status = "Approved";
+    
+            pro.Users.Add(newUser);
+            // Save changes to commit to db
+            await _context.SaveChangesAsync();
+            return Ok(resp);
+        }
 
         // DELETE: api/ProjectApplications/5
         [HttpDelete("{id}")]
@@ -83,7 +100,6 @@ namespace Lagalt.Controllers
             {
                 return NotFound();
             }
-
             _context.ProjectApplications.Remove(projectApplication);
             await _context.SaveChangesAsync();
 
