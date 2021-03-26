@@ -97,7 +97,7 @@ namespace Lagalt.Controllers
         // POST: api/Industries
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CommonResponse<Industry>>> PostIndustry(IndustryCreateDto industry)
+        public async Task<ActionResult<CommonResponse<IndustryDto>>> PostIndustry(IndustryCreateDto industry)
         {
             CommonResponse<IndustryDto> response = new CommonResponse<IndustryDto>();
 
