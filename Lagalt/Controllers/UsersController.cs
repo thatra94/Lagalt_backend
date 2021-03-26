@@ -190,8 +190,8 @@ namespace Lagalt.Controllers
             return NoContent();
         }
         // GET: api/User/5/UserProfil/UserId
-        [HttpPost("/{user}")]
-        public async Task<ActionResult<CommonResponse<UserProfilDto>>> GetUserProfil(int user, string userId)
+        [HttpPost("{user}")]
+        public async Task<ActionResult<CommonResponse<UserProfilDto>>> GetUserProfil(int user, UserIdDto userId)
         {
             // Create response object
             CommonResponse<UserProfilDto> respons = new CommonResponse<UserProfilDto>();
@@ -203,7 +203,7 @@ namespace Lagalt.Controllers
             var userModel = await _context.Users.
                                     Include(p => p.Projects).
                                     Include(p => p.Portofolios).
-                                    Where(u => u.UserId == userId).FirstOrDefaultAsync();
+                                    Where(u => u.UserId == userId.UserId).FirstOrDefaultAsync();
             if (userModel.Hidden == true)
             {
                 respons.Data = _mapper.Map<UserProfilDto>(userModel);
