@@ -203,14 +203,14 @@ namespace Lagalt.Controllers
             var userModel = await _context.Users.
                                     Include(p => p.Projects).
                                     Include(p => p.Portofolios).
-                                    Where(u => u.UserId == userId.UserId).FirstOrDefaultAsync();
+                                    Where(u => u.Id == user).FirstOrDefaultAsync();
             if (userModel.Hidden == true)
             {
                 respons.Data = _mapper.Map<UserProfilDto>(userModel);
-            }
-            foreach (Project project in userModel.Projects)
+
+                foreach (Project project in userModel.Projects)
                 {
-                    User userAdmin = await _context.Users.Where(u => u.Id == user).FirstOrDefaultAsync();
+                    User userAdmin = await _context.Users.Where(u => u.Id == userId.Id).FirstOrDefaultAsync();
 
                     if (project.UserId == userAdmin.Id)
                     {
@@ -222,6 +222,7 @@ namespace Lagalt.Controllers
                         respons.Data = _mapper.Map<UserProfilDto>(userModel);
                     }
                 }
+            }
             if (userModel == null)
             {
                 respons.Error = new Error { Status = 404, Message = "Cannot find a user with that Id" };
