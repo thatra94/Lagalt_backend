@@ -106,14 +106,12 @@ namespace Lagalt.Controllers
             await _context.SaveChangesAsync();
 
             respons.Data = _mapper.Map<UserDto>(user);
-
             return Ok(respons);
         }
         private bool UserExists(string userId)
         {
             return _context.Users.Any(e => e.UserId == userId);
         }
-
         //Get skills for user
         [HttpGet("{userId}/Skills")]
         public async Task<ActionResult<CommonResponse<SkillDto>>> GetSkillsInUser(string userId)
@@ -175,6 +173,7 @@ namespace Lagalt.Controllers
             }
             userModel.Description = user.Description;
             userModel.ImageUrl = user.ImageUrl;
+            userModel.Hidden = user.Hidden;
 
             foreach (SkillCreateDto skillName in user.Skills)
             {
@@ -188,11 +187,9 @@ namespace Lagalt.Controllers
             }
             // Save changes to commit to db
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
-
-        // GET: api/User/5
+        // GET: api/User/5/UserProfil/UserId
         [HttpGet("api/{user}/userProfil/{userId}")]
         public async Task<ActionResult<CommonResponse<UserProfilDto>>> GetUserProfil(int user, string userId)
         {
@@ -207,20 +204,24 @@ namespace Lagalt.Controllers
                                     Include(p => p.Projects).
                                     Include(p => p.Portofolios).
                                     Where(u => u.UserId == userId).FirstOrDefaultAsync();
-
-            foreach (Project project in userModel.Projects)
+            if (userModel.Hidden == true)
             {
-                User userAdmin = await _context.Users.Where(u => u.Id == user).FirstOrDefaultAsync();
-
-                if (project.UserId == userAdmin.Id)
-                {
-                    userModel = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync();
-                    respons.Data = _mapper.Map<UserProfilDto>(userModel);
-                } else
-                {
-                    respons.Data = _mapper.Map<UserProfilDto>(userModel);
-                }
+                respons.Data = _mapper.Map<UserProfilDto>(userModel);
             }
+            foreach (Project project in userModel.Projects)
+                {
+                    User userAdmin = await _context.Users.Where(u => u.Id == user).FirstOrDefaultAsync();
+
+                    if (project.UserId == userAdmin.Id)
+                    {
+                        userModel = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync();
+                        respons.Data = _mapper.Map<UserProfilDto>(userModel);
+                    }
+                    else
+                    {
+                        respons.Data = _mapper.Map<UserProfilDto>(userModel);
+                    }
+                }
             if (userModel == null)
             {
                 respons.Error = new Error { Status = 404, Message = "Cannot find a user with that Id" };

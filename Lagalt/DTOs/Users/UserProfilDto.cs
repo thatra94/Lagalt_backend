@@ -11,9 +11,9 @@ namespace Lagalt.DTOs.Users
     public class UserProfilDto { 
 
         public string Name { get; set; }
-
         public string UserId { get; set; }
         public string Description { get; set; }
+        public bool Hidden { get; set; }
         //Relationship
         public ICollection<SkillCreateDto>? Skills { get; set; }
         public ICollection<ProjectSkillsDto> Projects { get; set; }

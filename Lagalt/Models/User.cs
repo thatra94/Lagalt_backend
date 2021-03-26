@@ -22,7 +22,7 @@ namespace Lagalt.Models
         public string ImageUrl { get; set; }
         [MaxLength(500)]
         public string Description { get; set; }
-
+        public bool Hidden { get; set; }
         //Relationship
         public ICollection<Skill> Skills { get; set; }
         public ICollection<Project> Projects { get; set; }

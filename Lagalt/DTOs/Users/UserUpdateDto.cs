@@ -11,7 +11,8 @@ namespace Lagalt.DTOs.Users
     {
         public string UserId { get; set; }
         public string? ImageUrl { get; set; }
-        public string? Description { get; set; } 
+        public string? Description { get; set; }
+        public bool Hidden { get; set; }
         public List<SkillCreateDto>? Skills { get; set; }
     
     }
