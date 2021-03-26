@@ -15,6 +15,7 @@ using Lagalt.DTOs.Industries;
 using Lagalt.DTOs.Themes;
 using Lagalt.DTOs.UserComments;
 using Lagalt.DTOs.Links;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Lagalt.Controllers
 {
@@ -32,6 +33,12 @@ namespace Lagalt.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Get all projects including skills, themes and industry",
+            Description = "Get all projects including skills, themes and industry"
+
+            )]
+        [SwaggerResponse(404, "Cannot find a project with that Id")]
         public async Task<ActionResult<IEnumerable<CommonResponse<ProjectSkillsDto>>>> GetProjectsWithSkills()
         {
             // Make CommonResponse object to use
@@ -56,6 +63,12 @@ namespace Lagalt.Controllers
     
         // GET: api/Projects/5
         [HttpGet("{id}")]
+        [SwaggerOperation(
+            Summary = "Get project by id including skills, themes and industry",
+            Description = "Get project by id including skills, themes and industry"
+
+            )]
+        [SwaggerResponse(404, "Cannot find a project with that Id")]
         public async Task<ActionResult<IEnumerable<CommonResponse<ProjectViewDto>>>> GetProjectInProjectView(int id)
         {
             CommonResponse<ProjectViewDto> response = new CommonResponse<ProjectViewDto>();
@@ -66,7 +79,6 @@ namespace Lagalt.Controllers
                                                    .Include(l => l.Links)
                                                    .Include(u => u.Users)
                                                    .FirstOrDefaultAsync(i => i.Id == id);
-
 
             if (projectModel == null)
             {
@@ -232,7 +244,6 @@ namespace Lagalt.Controllers
 
             // Map to projectDto
             response.Data = _mapper.Map<ProjectDto>(projectModel);
-
 
             return CreatedAtAction("GetProjectInProjectView", new { id = response.Data.Id }, response);
         }
