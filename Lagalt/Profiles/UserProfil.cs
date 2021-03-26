@@ -14,7 +14,10 @@ namespace Lagalt.Profiles
             CreateMap<UserCreateDto, User>().ReverseMap();
             CreateMap<UserUpdateDto, User>().ReverseMap();
             CreateMap<UserShortDto, User>().ReverseMap();
+
+            CreateMap<UserProfilDto, User>().ReverseMap();
             CreateMap<UserNameDto, User>().ReverseMap();
+
         }
     }
 }

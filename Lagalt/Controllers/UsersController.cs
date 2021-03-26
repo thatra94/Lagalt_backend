@@ -43,24 +43,6 @@ namespace Lagalt.Controllers
         }
 
         // GET: api/User/5
-        [HttpGet("{userId}/hidden=true")]
-        public async Task<ActionResult<CommonResponse<UserShortDto>>> GetUserHiddden(string userId)
-        {
-            // Create response object
-            CommonResponse<UserShortDto> respons = new CommonResponse<UserShortDto>();
-            var userModel = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
-
-            if (userModel == null)
-            {
-                respons.Error = new Error { Status = 404, Message = "Cannot find a user with that Id" };
-                return NotFound(respons);
-            }
-            // Map 
-            respons.Data = _mapper.Map<UserShortDto>(userModel);
-            return Ok(respons);
-        }
-
-        // GET: api/User/5
         [HttpGet("{userId}")]
         public async Task<ActionResult<CommonResponse<UserDto>>> GetUser(string userId)
         {
@@ -208,6 +190,44 @@ namespace Lagalt.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // GET: api/User/5
+        [HttpGet("api/{user}/userProfil/{userId}")]
+        public async Task<ActionResult<CommonResponse<UserProfilDto>>> GetUserProfil(int user, string userId)
+        {
+            // Create response object
+            CommonResponse<UserProfilDto> respons = new CommonResponse<UserProfilDto>();
+            var projectModel = await _context.Projects.Include(p => p.Skills)
+                                      .Include(p => p.Industry)
+                                      .Include(p => p.Themes)
+                                      .ToListAsync();
+
+            var userModel = await _context.Users.
+                                    Include(p => p.Projects).
+                                    Include(p => p.Portofolios).
+                                    Where(u => u.UserId == userId).FirstOrDefaultAsync();
+
+            foreach (Project project in userModel.Projects)
+            {
+                User userAdmin = await _context.Users.Where(u => u.Id == user).FirstOrDefaultAsync();
+
+                if (project.UserId == userAdmin.Id)
+                {
+                    userModel = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync();
+                    respons.Data = _mapper.Map<UserProfilDto>(userModel);
+                } else
+                {
+                    respons.Data = _mapper.Map<UserProfilDto>(userModel);
+                }
+            }
+            if (userModel == null)
+            {
+                respons.Error = new Error { Status = 404, Message = "Cannot find a user with that Id" };
+                return NotFound(respons);
+            }
+            // Map 
+            return Ok(respons);
         }
     }
 }

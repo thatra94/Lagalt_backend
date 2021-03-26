@@ -10,6 +10,9 @@ using Lagalt.Models;
 using AutoMapper;
 using Lagalt.DTOs.UserHistories;
 using Lagalt.ResponseModel;
+using Lagalt.DTOs.Projects;
+using Lagalt.DTOs;
+using Lagalt.DTOs.Themes;
 
 namespace Lagalt.Controllers
 {
@@ -31,27 +34,93 @@ namespace Lagalt.Controllers
             // Create response object
             CommonResponse<IEnumerable<UserHistoryDto>> respons = new CommonResponse<IEnumerable<UserHistoryDto>>();
             // Fetch list of model class and map to dto
-            var modelUser = await _context.UserHistories.Where(t => t.TypeHistory == HistoryType.ProjectClickedOn).ToListAsync();
+            var modelUser = await _context.UserHistories.GroupBy(p => p.ProjectId).ToListAsync();
+            /*Where(t => t.TypeHistory == HistoryType.ProjectClickedOn)
+            .OrderByDescending(p => p.ProjectId).ToListAsync();*/
             List<UserHistoryDto> users = _mapper.Map<List<UserHistoryDto>>(modelUser);
             // Return the data
             respons.Data = users;
             return Ok(respons);
         }
+     /*   [HttpGet]
+        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectSkillsDto>>>> GetProjectsWithSkills(int userId)
+        {
+            // Make CommonResponse object to use
+            CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
+            var projectModel = await _context.Projects.Include(p => p.Skills)
+                                                      .Include(p => p.Industry)
+                                                      .Include(p => p.Themes)
+                                                      .GroupBy(p => p.Industry)
+                                                      .Select(u => new
+                                                      {
+                                                          
+                                                      })
+                                                      .ToListAsync();
+
+
+            // Map skills and industry
+            List<ProjectSkillsDto> projects = _mapper.Map<List<ProjectSkillsDto>>(projectModel);
+            foreach (ProjectSkillsDto project in projects)
+            {
+                project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
+                project.Themes = _mapper.Map<List<ThemeDto>>(project.Themes);
+                // project.Industry = _mapper.Map<IndustryDto>(project.Industry);
+                project.IndustryName = project.IndustryName;
+            }
+            // Return data
+            response.Data = projects;
+            return Ok(response);
+        }
+     */
+        /*
+         * ar GroupedTags = Tags.GroupBy(c => c.Tag)
+    .Select(g => new 
+    { 
+        name = g.Key, 
+        count = g.Count(), 
+        date = g.Max(x => x.CreatedDate)
+    })
+    .OrderBy(c => c.name);
+        */
         //Get history for user
         [HttpGet("{userId}")]
         public async Task<ActionResult<CommonResponse<UserHistoryDto>>> GetUserHistoryForUser(int userId)
         {
+
             // Make response object
-            CommonResponse<IEnumerable<UserHistoryDto>> respons = new CommonResponse<IEnumerable<UserHistoryDto>>();
-            var uh = await _context.UserHistories.Where(u => u.UserId == userId).ToListAsync();
+            CommonResponse<UserHistoryDto> respons = new CommonResponse<UserHistoryDto>();
+
+            var uh = await _context.UserHistories.Where(u => u.UserId == userId).
+                GroupBy(p => p.ProjectId).Select(g => new UserHistory
+                {
+                    ProjectId = g.Key,
+                    Id = g.Count()
+                }).FirstOrDefaultAsync();
+
+        //    var pr = await _context.Projects.Include(t => t.Themes).Where(p => p.Themes.
+            //Select(t => t.id).FirstAsync();
+                
+            //    Where(u => u.Id == uh.ProjectId).FirstAsync();
+           // uh.UserId = pr.Id;
+            //Select t.Name FROM Themes AS t, ProjectTheme as pt, Projects as p WHERE p.Id = 1 AND p.Id = pt.ProjectsId AND pt.ThemesId = t.Id;
+           //  var theme = await _context.Themes.Include(p => p.Projects).Where(pr.Id == )
+
+            //GroupBy(t => t.Projects).Where(p => p. uh.ProjectId).FirstAsync();
+
+
+            //  Where(t => t.Id == uh.ProjectId).FirstAsync();
+            // uh.UserId = theme.Id;
+            //project.UserName = user.Name;
+
+
             if (uh == null)
             {
                 respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
                 return NotFound(respons);
             }
             // Map to dto
-            respons.Data = _mapper.Map<List<UserHistoryDto>>(uh);
-            return Ok(respons);
+           respons.Data = _mapper.Map<UserHistoryDto>(uh);
+            return Ok(respons.Data);
         }
 
         //post history to user
@@ -72,23 +141,40 @@ namespace Lagalt.Controllers
             return Ok(resp);
         }
 
-        // DELETE: api/UserHistories/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserHistory(int id)
-        {
-            var userHistory = await _context.UserHistories.FindAsync(id);
-            if (userHistory == null)
-            {
-                return NotFound();
-            }
-            _context.UserHistories.Remove(userHistory);
-            await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
-        private bool UserHistoryExists(int id)
+        // post: api/Projects/5
+        [HttpPost("{id}")]
+        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectViewDto>>>> GetProjectInProjectView(int id, int userId)
         {
-            return _context.UserHistories.Any(e => e.Id == id);
+            CommonResponse<ProjectViewDto> response = new CommonResponse<ProjectViewDto>();
+
+            var projectModel = await _context.Projects.Include(s => s.Skills)
+                                                   .Include(i => i.Industry)
+                                                   .Include(t => t.Themes)
+                                                   .Include(l => l.Links)
+                                                   .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (projectModel == null)
+            {
+                response.Error = new Error { Status = 404, Message = "Cannot find a project with that Id" };
+                return NotFound(response);
+            }
+            //Map to Dto
+            ProjectViewDto project = _mapper.Map<ProjectViewDto>(projectModel);
+            project.IndustryName = project.IndustryName;
+
+            UserHistory userHistory = new UserHistory();
+            userHistory.ProjectId = id;
+            userHistory.TypeHistory = HistoryType.ProjectClickedOn;
+            userHistory.UserId = userId;
+            _context.UserHistories.Add(userHistory);
+
+        // Save changes to commit to db
+          await _context.SaveChangesAsync();
+
+            response.Data = project;
+
+            return Ok(response);
         }
     }
 }
