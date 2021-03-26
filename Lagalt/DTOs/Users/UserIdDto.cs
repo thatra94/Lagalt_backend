@@ -7,6 +7,6 @@ namespace Lagalt.DTOs.Users
 {
     public class UserIdDto
     {
-        public string UserId { get; set; }
+        public int Id { get; set; }
     }
 }
