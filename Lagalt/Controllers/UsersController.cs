@@ -204,7 +204,13 @@ namespace Lagalt.Controllers
                                     Include(p => p.Projects).
                                     Include(p => p.Portofolios).
                                     Where(u => u.Id == user).FirstOrDefaultAsync();
-            if (userModel.Hidden == true)
+            if(userModel.Hidden == false)
+            {
+                userModel = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync();
+                respons.Data = _mapper.Map<UserProfilDto>(userModel);
+            }
+    
+            else if  (userModel.Hidden == true)
             {
                 respons.Data = _mapper.Map<UserProfilDto>(userModel);
 
