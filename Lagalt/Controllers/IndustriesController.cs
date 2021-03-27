@@ -10,6 +10,7 @@ using Lagalt.Models;
 using AutoMapper;
 using Lagalt.ResponseModel;
 using Lagalt.DTOs.Industries;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Lagalt.Controllers
 {
@@ -28,6 +29,14 @@ namespace Lagalt.Controllers
 
         // GET: api/Industries
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Returns all industries",
+            Description = "Returns all industries"
+
+            )]
+        [SwaggerResponse(200, "Success")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<CommonResponse<IEnumerable<IndustryDto>>>> GetIndustries()
         {
             CommonResponse<IEnumerable<IndustryDto>> response = new CommonResponse<IEnumerable<IndustryDto>>();
@@ -42,6 +51,14 @@ namespace Lagalt.Controllers
 
         // GET: api/Industries/5
         [HttpGet("{id}")]
+        [SwaggerOperation(
+            Summary = "Returns industry based on id",
+            Description = "Returns industry based on id"
+
+            )]
+        [SwaggerResponse(200, "Success")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found. Cannot find an industry with that Id")]
         public async Task<ActionResult<CommonResponse<IndustryDto>>> GetIndustry(int id)
         {
             CommonResponse<IndustryDto> response = new CommonResponse<IndustryDto>();
@@ -62,6 +79,14 @@ namespace Lagalt.Controllers
         // PUT: api/Industries/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [SwaggerOperation(
+            Summary = "Updates all values for an industry",
+            Description = "Updates all values for an industry"
+
+            )]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<IActionResult> PutIndustry(int id, IndustryDto industry)
         {
             CommonResponse<IndustryDto> response = new CommonResponse<IndustryDto>();
@@ -97,6 +122,14 @@ namespace Lagalt.Controllers
         // POST: api/Industries
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Creates a new industry",
+            Description = "Creates a new industry"
+
+            )]
+        [SwaggerResponse(201, "Created")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<IndustryDto>>> PostIndustry(IndustryCreateDto industry)
         {
             CommonResponse<IndustryDto> response = new CommonResponse<IndustryDto>();
@@ -131,6 +164,15 @@ namespace Lagalt.Controllers
 
         // DELETE: api/Industries/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Deletes an industry",
+            Description = "Deletes an industry"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<IndustryDto>>> DeleteIndustry(int id)
         {
             CommonResponse<IndustryDto> response = new CommonResponse<IndustryDto>();

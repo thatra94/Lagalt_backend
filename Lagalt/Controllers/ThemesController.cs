@@ -10,6 +10,7 @@ using Lagalt.Models;
 using AutoMapper;
 using Lagalt.ResponseModel;
 using Lagalt.DTOs.Themes;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Lagalt.Controllers
 {
@@ -28,6 +29,14 @@ namespace Lagalt.Controllers
 
         // GET: api/Themes
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Returns all themes",
+            Description = "Returns all themes"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<CommonResponse<IEnumerable<ThemeDto>>>> GetThemes()
         {
             CommonResponse<IEnumerable<ThemeDto>> response = new CommonResponse<IEnumerable<ThemeDto>>();
@@ -42,6 +51,14 @@ namespace Lagalt.Controllers
 
         // GET: api/Themes/5
         [HttpGet("{id}")]
+        [SwaggerOperation(
+            Summary = "Returns theme based on id",
+            Description = "Returns theme based on id"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<CommonResponse<ThemeDto>>> GetTheme(int id)
         {
             CommonResponse<ThemeDto> response = new CommonResponse<ThemeDto>();
@@ -62,6 +79,14 @@ namespace Lagalt.Controllers
         // PUT: api/Themes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [SwaggerOperation(
+            Summary = "Updates all values for a theme",
+            Description = "Updates all values for a theme"
+
+            )]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<IActionResult> PutTheme(int id, ThemeDto theme)
         {
             CommonResponse<ThemeDto> response = new CommonResponse<ThemeDto>();
@@ -97,6 +122,14 @@ namespace Lagalt.Controllers
         // POST: api/Themes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Creates a new theme",
+            Description = "Creates a new theme"
+
+            )]
+        [SwaggerResponse(201, "Created")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<ThemeDto>>> PostTheme(ThemeCreateDto theme)
         {
             CommonResponse<ThemeDto> response = new CommonResponse<ThemeDto>();
@@ -131,6 +164,15 @@ namespace Lagalt.Controllers
 
         // DELETE: api/Themes/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Deletes a theme",
+            Description = "Deletes a theme"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<ThemeDto>>> DeleteTheme(int id)
         {
             CommonResponse<ThemeDto> response = new CommonResponse<ThemeDto>();
