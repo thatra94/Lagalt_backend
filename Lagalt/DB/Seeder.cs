@@ -34,6 +34,15 @@ namespace Lagalt.DB
                 new Skill {Id = 19, Name= "Klipper"},
                 new Skill {Id = 20, Name= "Python"},
                 new Skill {Id = 21, Name= "Vue"},
+                new Skill {Id = 22, Name= "Miksing"},
+                new Skill {Id = 23, Name= "Cubase"},
+                new Skill {Id = 24, Name= "Animate CC"},
+                new Skill {Id = 25, Name= "Tegning"},
+                new Skill {Id = 26, Name= "Affinity Photo"},
+                new Skill {Id = 27, Name= "Fotoekspert"},
+                new Skill {Id = 28, Name= "Photoshop"},
+                new Skill {Id = 29, Name= "Skuespillererfaring"},
+                new Skill {Id = 30, Name= "Databaser"}
             };
             return skills;
         }

@@ -110,6 +110,106 @@ namespace Lagalt.DB
                     Status = "Under utvikling",
                     IndustryId = 1,
                     UserId = 4
+                },
+                new Project
+                {
+                    Id = 11,
+                    Name = "After hours: Remix album",
+                    Description = "Projektet går ut på å lage et remix album av After Hours",
+                    ImageUrl = "https://dbdzm869oupei.cloudfront.net/img/vinylrugs/preview/18784.png",
+                    Status = "Under utvikling",
+                    IndustryId = 2,
+                    UserId = 30
+                },
+                new Project
+                {
+                    Id = 12,
+                    Name = "Samlealbum elektronisk musikk",
+                    Description = "Ønsker å samle artister til å lage et album",
+                    ImageUrl = "https://dt7v1i9vyp3mf.cloudfront.net/styles/news_large/s3/imagelibrary/m/moog_one_sound-P087eHzg49waKAA2MV2WqvZgTkf_dZkN.jpg",
+                    Status = "Opprettet",
+                    IndustryId = 2,
+                    UserId = 4
+                },
+                new Project
+                {
+                    Id = 13,
+                    Name = "Gutten og snømannen",
+                    Description = "Tegnefilm om en liten gutt og snømannen hans",
+                    ImageUrl = "https://filmklubb.no/wp/wp-content/uploads/2012/11/guttenogsnomannen-630x340.jpg",
+                    Status = "Opprettet",
+                    IndustryId = 5,
+                    UserId = 4
+                },
+                new Project
+                {
+                    Id = 14,
+                    Name = "Woodys magiske jul",
+                    Description = "Animasjonsfilm om woody i jula",
+                    ImageUrl = "https://lumiere-a.akamaihd.net/v1/images/open-uri20150422-20810-10n7ovy_9b42e613.jpeg?region=0,0,450,450",
+                    Status = "På Vent",
+                    IndustryId = 5,
+                    UserId = 4
+                },
+                new Project
+                {
+                    Id = 15,
+                    Name = "Livet på bøgda",
+                    Description = "Samler bilder fra utkant-norge for å lage fotobok",
+                    ImageUrl = "https://p3.no/wp-content/uploads/2020/03/15_stor_16x9.jpg",
+                    Status = "Opprettet",
+                    IndustryId = 6,
+                    UserId = 4
+                },
+                new Project
+                {
+                    Id = 16,
+                    Name = "Fuglefoto",
+                    Description = "Fotoprojekt for fuglefoto",
+                    ImageUrl = "https://www.adressa.no/incoming/article14114726.ece/a3zoi/BINARY/w980/tba3b37a.jpg",
+                    Status = "Ferdig",
+                    IndustryId = 6,
+                    UserId = 4
+                },
+                new Project
+                {
+                    Id = 17,
+                    Name = "Kortfilm",
+                    Description = "Projektet går ut på å lage en kortfilm",
+                    ImageUrl = "http://www.filmfront.no/gfx/kortfilm.jpg",
+                    Status = "Opprettet",
+                    IndustryId = 4,
+                    UserId = 4
+                },
+                new Project
+                {
+                    Id = 18,
+                    Name = "Mattespill",
+                    Description = "Projektet lage en webapplikasjon som er et mattespill",
+                    ImageUrl = "https://thumbs-prod.si-cdn.com/dE1WGJFS_iPeyEEHa5bf2bWc1hg=/fit-in/1600x0/filters:focal(1295x777:1296x778)/https://public-media.si-cdn.com/filer/87/ee/87ee6918-7808-4e18-b3f9-d3c3db54e873/gettyimages-157686793_web.jpg",
+                    Status = "Opprettet",
+                    IndustryId = 3,
+                    UserId = 6
+                },
+                new Project
+                {
+                    Id = 19,
+                    Name = "Nettbutikk klær",
+                    Description = "Projektet lage en webapplikasjon som skal fungere som en nettbutikk for ulike merker",
+                    ImageUrl = "https://cdn.sanity.io/images/pq0o4uqt/production/ce9bb0f62dc4197ee239a2ce64174038a6125537-4032x3024.jpg?rect=0,378,4032,2268&w=1200&h=675&fit=crop",
+                    Status = "På Vent",
+                    IndustryId = 1,
+                    UserId = 10
+                },
+                new Project
+                {
+                    Id = 20,
+                    Name = "Cities Skylines",
+                    Description = "Simslignende spill",
+                    ImageUrl = "https://store-images.s-microsoft.com/image/apps.41325.14005705415125511.f2721de4-9cb5-4d00-9323-bd9afe457b1f.5c04c69a-a73b-486d-9a91-06980efc972b?mode=scale&q=90&h=1080&w=1920&format=jpg",
+                    Status = "Opprettet",
+                    IndustryId = 3,
+                    UserId = 15
                 }
             };
             return projects;
@@ -271,6 +371,76 @@ namespace Lagalt.DB
                 {
                     Id = 23,
                     Name = "Bøker"
+                },
+                new Theme
+                {
+                    Id = 24,
+                    Name = "Musikkproduksjon"
+                },
+                new Theme
+                {
+                    Id = 25,
+                    Name = "Synth"
+                },
+                new Theme
+                {
+                    Id = 26,
+                    Name = "Animasjon"
+                },
+                new Theme
+                {
+                    Id = 27,
+                    Name = "Tegnefilm"
+                },
+                new Theme
+                {
+                    Id = 28,
+                    Name = "Jul"
+                },
+                new Theme
+                {
+                    Id = 29,
+                    Name = "Utkant-Norge"
+                },
+                new Theme
+                {
+                    Id = 30,
+                    Name = "Råning"
+                },
+                new Theme
+                {
+                    Id = 31,
+                    Name = "Foto"
+                },
+                new Theme
+                {
+                    Id = 32,
+                    Name = "Fugler"
+                },
+                new Theme
+                {
+                    Id = 33,
+                    Name = "Kortfilm"
+                },
+                new Theme
+                {
+                    Id = 34,
+                    Name = "Matte"
+                },
+                new Theme
+                {
+                    Id = 35,
+                    Name = "Nettbutikk"
+                },
+                new Theme
+                {
+                    Id = 36,
+                    Name = "Klær"
+                },
+                new Theme
+                {
+                    Id = 37,
+                    Name = "City builder"
                 }
 
             };
