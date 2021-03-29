@@ -10,6 +10,7 @@ using Lagalt.Models;
 using AutoMapper;
 using Lagalt.ResponseModel;
 using Lagalt.DTOs.Links;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Lagalt.Controllers
 {
@@ -28,6 +29,14 @@ namespace Lagalt.Controllers
 
         // GET: api/Links
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Returns all links",
+            Description = "Returns all links"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<CommonResponse<IEnumerable<LinkDto>>>> GetLinks()
         {
             CommonResponse<IEnumerable<LinkDto>> response = new CommonResponse<IEnumerable<LinkDto>>();
@@ -42,6 +51,14 @@ namespace Lagalt.Controllers
 
         // GET: api/Links/5
         [HttpGet("{id}")]
+        [SwaggerOperation(
+            Summary = "Returns link based on id",
+            Description = "Returns link based on id"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<CommonResponse<LinkDto>>> GetLink(int id)
         {
             CommonResponse<LinkDto> response = new CommonResponse<LinkDto>();
@@ -62,6 +79,14 @@ namespace Lagalt.Controllers
         // PUT: api/Links/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [SwaggerOperation(
+            Summary = "Updates all values for a link",
+            Description = "Updates all values for a link"
+
+            )]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<IActionResult> PutLink(int id, LinkDto link)
         {
             CommonResponse<LinkDto> response = new CommonResponse<LinkDto>();
@@ -98,6 +123,14 @@ namespace Lagalt.Controllers
         // POST: api/Links
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Creates a new link",
+            Description = "Creates a new link"
+
+            )]
+        [SwaggerResponse(201, "Created")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<LinkDto>>> PostLink(LinkCreateDto link)
         {
             CommonResponse<LinkDto> response = new CommonResponse<LinkDto>();
@@ -132,6 +165,15 @@ namespace Lagalt.Controllers
 
         // DELETE: api/Links/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Deletes a link",
+            Description = "Deletes a link"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<LinkDto>>> DeleteLink(int id)
         {
             CommonResponse<LinkDto> response = new CommonResponse<LinkDto>();

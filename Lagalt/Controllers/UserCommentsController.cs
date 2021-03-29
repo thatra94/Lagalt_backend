@@ -10,6 +10,7 @@ using Lagalt.Models;
 using AutoMapper;
 using Lagalt.ResponseModel;
 using Lagalt.DTOs.UserComments;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Lagalt.Controllers
 {
@@ -28,6 +29,14 @@ namespace Lagalt.Controllers
 
         // GET: api/UserComments
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Returns all user comments",
+            Description = "Returns all user comments"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<CommonResponse<IEnumerable<UserCommentReadDto>>>> GetUserComments()
         {
             CommonResponse<IEnumerable<UserCommentReadDto>> response = new CommonResponse<IEnumerable<UserCommentReadDto>>();
@@ -47,6 +56,14 @@ namespace Lagalt.Controllers
 
         // GET: api/UserComments/5
         [HttpGet("{id}")]
+        [SwaggerOperation(
+            Summary = "Returns user comment based on id",
+            Description = "Returns user comment based on id"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<CommonResponse<UserCommentDto>>> GetUserComment(int id)
         {
             CommonResponse<UserCommentDto> response = new CommonResponse<UserCommentDto>();
@@ -67,6 +84,14 @@ namespace Lagalt.Controllers
         // PUT: api/UserComments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [SwaggerOperation(
+            Summary = "Updates all values for an user comment",
+            Description = "Updates all values for an user comment"
+
+            )]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<IActionResult> PutUserComment(int id, UserCommentDto userComment)
         {
             CommonResponse<UserCommentDto> response = new CommonResponse<UserCommentDto>();
@@ -103,6 +128,14 @@ namespace Lagalt.Controllers
         // POST: api/UserComments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Creates a new user comment",
+            Description = "Creates a new user comment"
+
+            )]
+        [SwaggerResponse(201, "Created")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<UserCommentReadDto>>> PostUserComment(UserCommentCreateDto userComment)
         {
             CommonResponse<UserCommentReadDto> response = new CommonResponse<UserCommentReadDto>();
@@ -141,6 +174,15 @@ namespace Lagalt.Controllers
 
         // DELETE: api/UserComments/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Deletes an user comment",
+            Description = "Deletes an user comment"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<UserCommentDto>>> DeleteUserComment(int id)
         {
             CommonResponse<UserCommentDto> response = new CommonResponse<UserCommentDto>();

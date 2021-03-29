@@ -34,11 +34,13 @@ namespace Lagalt.Controllers
 
         [HttpGet]
         [SwaggerOperation(
-            Summary = "Get all projects including skills, themes and industry",
-            Description = "Get all projects including skills, themes and industry"
+            Summary = "Returns all projects including skills, themes and industry",
+            Description = "Returns all projects including skills, themes and industry. Used for banners in main view"
 
             )]
-        [SwaggerResponse(404, "Cannot find a project with that Id")]
+        [SwaggerResponse(200, "Success")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<IEnumerable<CommonResponse<ProjectSkillsDto>>>> GetProjectsWithSkills()
         {
             // Make CommonResponse object to use
@@ -64,11 +66,13 @@ namespace Lagalt.Controllers
         // GET: api/Projects/5
         [HttpGet("{id}")]
         [SwaggerOperation(
-            Summary = "Get project by id including skills, themes and industry",
-            Description = "Get project by id including skills, themes and industry"
+            Summary = "Returns project based on id. Includes skills, themes and industry",
+            Description = "Returns project based on id. Including skills, themes and industry"
 
             )]
-        [SwaggerResponse(404, "Cannot find a project with that Id")]
+        [SwaggerResponse(200, "Success")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found. Cannot find a project with that Id")]
         public async Task<ActionResult<IEnumerable<CommonResponse<ProjectViewDto>>>> GetProjectInProjectView(int id)
         {
             CommonResponse<ProjectViewDto> response = new CommonResponse<ProjectViewDto>();
@@ -100,6 +104,14 @@ namespace Lagalt.Controllers
         // GET: api/Projects/5/comments
         // Get all comments related to a project
         [HttpGet("{id}/comments")]
+        [SwaggerOperation(
+            Summary = "Returns comments related to a project based on id",
+            Description = "Returns comments related to a project based on id"
+
+            )]
+        [SwaggerResponse(200, "Success")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found. Cannot find a project with that Id")]
         public async Task<ActionResult<CommonResponse<IEnumerable<ProjectCommentsDto>>>> GetUserComments(int id)
         {
             CommonResponse<IEnumerable<ProjectCommentsDto>> response = new CommonResponse<IEnumerable<ProjectCommentsDto>>();
@@ -120,6 +132,14 @@ namespace Lagalt.Controllers
         // PUT: api/Projects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [SwaggerOperation(
+            Summary = "Updates all values for a project",
+            Description = "Updates all values for a project"
+
+            )]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<IActionResult> PutProject(int id, ProjectDto projectDto)
         {
             CommonResponse<ProjectUpdateDto> response = new CommonResponse<ProjectUpdateDto>();
@@ -215,6 +235,14 @@ namespace Lagalt.Controllers
         // Post New project
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Creates a new project",
+            Description = "Creates a new project"
+
+            )]
+        [SwaggerResponse(201, "Created")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<ProjectDto>>> PostProject(ProjectCreateDto project)
         {
             CommonResponse<ProjectDto> response = new CommonResponse<ProjectDto>();
@@ -250,6 +278,15 @@ namespace Lagalt.Controllers
 
         // DELETE: api/Projects/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Deletes a project",
+            Description = "Deletes a project"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<ProjectDto>>> DeleteProject(int id)
         {
             CommonResponse<ProjectDto> response = new CommonResponse<ProjectDto>();
@@ -274,6 +311,14 @@ namespace Lagalt.Controllers
         // Get api/Projects/project=foo
         // Project name and more maybe later
         [HttpGet("search/project={searchString}")]
+        [SwaggerOperation(
+            Summary = "Returns a list of project based on search query",
+            Description = "Returns a list of projects in main view based on search query"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<CommonResponse<IEnumerable<ProjectSkillsDto>>>> GetProjectsBySearch(string searchString)
         {
             CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
@@ -299,6 +344,14 @@ namespace Lagalt.Controllers
         // Get api/Projects/filter/industry=foo
         // Project name and more maybe later
         [HttpGet("filter/industry={filterString}")]
+        [SwaggerOperation(
+            Summary = "Filters projects based on industry",
+            Description = "Returns a list of projects in main view based on filter"
+
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<CommonResponse<IEnumerable<ProjectSkillsDto>>>> GetProjectsByIndustry(string filterString)
         {
             CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
