@@ -26,9 +26,8 @@ namespace Lagalt.Controllers
             _context = context;
             _mapper = mapper;
         }
-
         // GET: api/ProjectApplications
-    /*    [HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<CommonResponse<ProjectApplicationDto>>>> GetProjectsApplications()
         {
             CommonResponse<IEnumerable<ProjectApplicationDto>> resp = new CommonResponse<IEnumerable<ProjectApplicationDto>>();
@@ -38,12 +37,12 @@ namespace Lagalt.Controllers
             // Return data
             resp.Data = projectApp;
             return Ok(resp);
-        }*/
+        }
 
         //Get applications for project
         [HttpGet("{projectId}")]
         [SwaggerOperation(
-            Summary = "Get project applications for a spesific project",
+            Summary = "Get all project applications for a spesific project",
             Description = "Get all project applications with status pending for one project"
             )]
         [SwaggerResponse(404, "A project with that id could not be found")]
@@ -65,10 +64,11 @@ namespace Lagalt.Controllers
 
         [HttpPost]
         [SwaggerOperation(
-            Summary = "Post project application",
-            Description = "Post project application with motivation text for a spesific project"
+            Summary = "Post project application for a spesific project",
+            Description = "Post project application with motivation text for a spesific project, " +
+            "status for project is pending upon post"
             )]
-        [SwaggerResponse(404, "The post did not pass validation, ensure it is in the correct format")]
+        [SwaggerResponse(400, "The post did not pass validation, ensure it is in the correct format")]
         public async Task<ActionResult<CommonResponse<ProjectApplicationDto>>> PostProjectApplication(ProjectApplicationCreateDto post)
         {
             // Make CommonResponse object to use
@@ -96,10 +96,10 @@ namespace Lagalt.Controllers
 
        [HttpPut]
         [SwaggerOperation(
-            Summary = "Put project application",
+            Summary = "Update status for one project application, link it to user",
             Description = "Put project to user when application is approved, and set status approved to projectApplications"
             )]
-        [SwaggerResponse(404, "The process did not pass validation, ensure it is in the correct format")]
+        [SwaggerResponse(400, "The process did not pass validation, ensure it is in the correct format")]
         public async Task<IActionResult> PutProjectToUser(ProjectAppResponsDto post)
         {
             // Make CommonResponse object to use
@@ -117,8 +117,11 @@ namespace Lagalt.Controllers
             return Ok(resp);
         }
 
-        // DELETE: api/ProjectApplications/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Deletes project application with spesific id"
+            )]
+        [SwaggerResponse(404, "Could not find a project application with spesific id")]
         public async Task<IActionResult> DeleteProjectApplication(int id)
         {
             var projectApplication = await _context.ProjectApplications.FindAsync(id);

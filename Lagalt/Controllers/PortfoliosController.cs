@@ -10,7 +10,7 @@ using Lagalt.Models;
 using AutoMapper;
 using Lagalt.ResponseModel;
 using Lagalt.DTOs.Portfolio;
-using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Lagalt.Controllers
 {
@@ -27,8 +27,13 @@ namespace Lagalt.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/Portfolios
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Returns all portfolios",
+            Description = "Returns all portfolios")]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<IEnumerable<CommonResponse<PortfolioDto>>>> GetPortfolios()
         {
             CommonResponse<IEnumerable<PortfolioDto>> resp = new CommonResponse<IEnumerable<PortfolioDto>>();
@@ -40,22 +45,6 @@ namespace Lagalt.Controllers
             return Ok(resp);
         }
 
-        // GET: api/¨Portfolios/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CommonResponse<PortfolioDto>>> GetPortfolio(int id)
-        {
-            // Create response object
-            CommonResponse<PortfolioDto> respons = new CommonResponse<PortfolioDto>();
-            var portfolio = await _context.Portfolios.FindAsync(id);
-            if (portfolio == null)
-            {
-                respons.Error = new Error { Status = 404, Message = "Cannot find a portfolio with that Id" };
-                return NotFound(respons);
-            }
-            // Map 
-            respons.Data = _mapper.Map<PortfolioDto>(portfolio);
-            return Ok(respons);
-        }
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPortfolio(int id, PortfolioDto port)
         {
@@ -128,8 +117,15 @@ namespace Lagalt.Controllers
             return Ok(respons);
         }
 
-        // DELETE: api/Skills/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+             Summary = "Deletes a portfolio",
+            Description = "Deletes a portfolio"
+               )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<PortfolioDto>>> DeletePortfolio(int id)
         {
             // Make response object

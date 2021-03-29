@@ -14,6 +14,7 @@ using Lagalt.DTOs.Projects;
 using Lagalt.DTOs;
 using Lagalt.DTOs.Themes;
 using System.Text.RegularExpressions;
+using Lagalt.DTOs.Users;
 
 namespace Lagalt.Controllers
 {
@@ -28,7 +29,6 @@ namespace Lagalt.Controllers
             _context = context;
             _mapper = mapper;
         }
-
         [HttpGet]
         public async Task<ActionResult<CommonResponse<IEnumerable<UserHistoryDto>>>> GetUserHistories()
         {
@@ -36,8 +36,7 @@ namespace Lagalt.Controllers
             CommonResponse<IEnumerable<UserHistoryDto>> respons = new CommonResponse<IEnumerable<UserHistoryDto>>();
             // Fetch list of model class and map to dto
             var modelUser = await _context.UserHistories.GroupBy(p => p.ProjectId).ToListAsync();
-            /*Where(t => t.TypeHistory == HistoryType.ProjectClickedOn)
-            .OrderByDescending(p => p.ProjectId).ToListAsync();*/
+
             List<UserHistoryDto> users = _mapper.Map<List<UserHistoryDto>>(modelUser);
             // Return the data
             respons.Data = users;
@@ -46,37 +45,32 @@ namespace Lagalt.Controllers
         [HttpGet("/project/{userId}")]
         public async Task<ActionResult<IEnumerable<CommonResponse<ProjectSkillsDto>>>> GetProjectsWithSkills(int userId)
         {
-            var uh = await _context.UserHistories.Where(u => u.UserId == userId).GroupBy(p => p.ProjectId).Select(g => new UserHistory
-            {
-                ProjectId = g.Key,
-                Id = g.Count()
-            }).FirstOrDefaultAsync();
+            var uh = await _context.UserHistories.Where(u => u.UserId == userId).
+               GroupBy(p => p.ProjectId).Select(g => new UserHistory
+               {
+                   ProjectId = g.Key,
+                   UserId = g.Count()
 
-            var whichP = await _context.Projects.Where(p => p.Id == uh.ProjectId).Include(p => p.Themes).FirstAsync();
+               }).OrderByDescending(u => u.UserId).FirstOrDefaultAsync();
 
-           var an = await _context.Themes.Include(p => p.Projects.Where(p => p.Id == uh.ProjectId)).FirstAsync();
+            var whichP = await _context.Projects.Where(p => p.Id == uh.ProjectId).Include(p => p.IndustryId).FirstAsync();
+
+            var an = await _context.Themes.Include(p => p.Projects.Where(p => p.Id == uh.ProjectId)).FirstAsync();
+            
             // Make CommonResponse object to use
             CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
-            var projectModel = await _context.Projects
+            var projectModel = await _context.Projects.Where(p => p.Id == whichP.Id)
                                                        .Include(p => p.Skills)
                                                       .Include(p => p.Industry)
-                                                       .Include(p => p.Industry)
-                                                       .Include(p => p.Themes)
-                                                       .GroupBy(p => p.Themes.Where
-                                                         (p => p.Name.StartsWith(whichP.Name)))
-
-                                                   //     .Where(p => p.Themes.Where(p => p.Id == 1))
-                                                       .ToListAsync();
-
-          //  var last = await _context.Projects.OrderByDescending
-            //Where(p => p.Themes.Where(p => p.Name.StartsWith("Web")))
+                                                      .Include(p => p.Themes).FirstOrDefaultAsync();
+         
             // Map skills and industry
             List<ProjectSkillsDto> projects = _mapper.Map<List<ProjectSkillsDto>>(projectModel);
             foreach (ProjectSkillsDto project in projects)
             {
                 project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
                 project.Themes = _mapper.Map<List<ThemeDto>>(project.Themes);
-                project.IndustryName = project.IndustryName;
+               project.IndustryName = project.IndustryName;
             }
             // Return data
             response.Data = projects;
@@ -91,29 +85,20 @@ namespace Lagalt.Controllers
             // Make response object
             CommonResponse<UserHistoryDto> respons = new CommonResponse<UserHistoryDto>();
 
+            /*
+            SELECT TOP 1 ProjectId, count(*) as C
+FROM UserHistories
+group by ProjectId
+order by C desc;
+            */
+
             var uh = await _context.UserHistories.Where(u => u.UserId == userId).
                 GroupBy(p => p.ProjectId).Select(g => new UserHistory
                 {
                     ProjectId = g.Key,
-                    Id = g.Count()
-                }).FirstOrDefaultAsync();
-
-            var pr = await _context.Projects.Include(t => t.Themes).Where(p => p.Id == uh.ProjectId).ToListAsync();
-
-            //Select(t => t.id).FirstAsync();
-                
-            //    Where(u => u.Id == uh.ProjectId).FirstAsync();
-           // uh.UserId = pr.Id;
-            //Select t.Name FROM Themes AS t, ProjectTheme as pt, Projects as p WHERE p.Id = 1 AND p.Id = pt.ProjectsId AND pt.ThemesId = t.Id;
-           //  var theme = await _context.Themes.Include(p => p.Projects).Where(pr.Id == )
-
-            //GroupBy(t => t.Projects).Where(p => p. uh.ProjectId).FirstAsync();
-
-
-            //  Where(t => t.Id == uh.ProjectId).FirstAsync();
-            // uh.UserId = theme.Id;
-            //project.UserName = user.Name;
-
+                    UserId = g.Count()
+                    
+                }).OrderByDescending(u => u.UserId).FirstOrDefaultAsync();
 
             if (uh == null)
             {
@@ -142,9 +127,9 @@ namespace Lagalt.Controllers
 
             return Ok(resp);
         }
-        // post: api/Projects/5
+
         [HttpPost("{id}")]
-        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectViewDto>>>> GetProjectInProjectView(int id, int userId)
+        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectViewDto>>>> GetProjectInProjectView(int id, UserIdDto userId)
         {
             CommonResponse<ProjectViewDto> response = new CommonResponse<ProjectViewDto>();
 
@@ -166,7 +151,7 @@ namespace Lagalt.Controllers
             UserHistory userHistory = new UserHistory();
             userHistory.ProjectId = id;
             userHistory.TypeHistory = HistoryType.ProjectClickedOn;
-            userHistory.UserId = userId;
+            userHistory.UserId = userId.Id;
             _context.UserHistories.Add(userHistory);
 
         // Save changes to commit to db
