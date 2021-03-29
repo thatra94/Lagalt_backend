@@ -124,6 +124,7 @@ namespace Lagalt.Controllers
             }
             // Save changes to commit to db
             await _context.SaveChangesAsync();
+            resp.Data = _mapper.Map<ProjectAppResponsDto>(pr);
             return Ok(resp);
         }
 
