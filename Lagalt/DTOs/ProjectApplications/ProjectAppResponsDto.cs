@@ -9,5 +9,7 @@ namespace Lagalt.DTOs.ProjectApplications
     {
         public int ProjectId { get; set; }
         public int UserId { get; set; }
+
+        public String Status { get; set; }
     }
 }

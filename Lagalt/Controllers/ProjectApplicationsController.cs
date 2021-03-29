@@ -114,10 +114,14 @@ namespace Lagalt.Controllers
             Project pro = await _context.Projects.Include(u => u.Users).FirstOrDefaultAsync(p => p.Id == post.ProjectId);
             User newUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == post.UserId);
             ProjectApplication pr =
-                await _context.ProjectApplications.Where(p => p.ProjectId == post.ProjectId).FirstOrDefaultAsync();
-            pr.Status = "Approved";
-    
-            pro.Users.Add(newUser);
+                await _context.ProjectApplications.Where(p => p.ProjectId == post.ProjectId)
+                .Where(u => u.UserId == post.UserId).FirstOrDefaultAsync();
+            pr.Status = post.Status;
+
+            if (post.Status == "approved")
+            {
+                pro.Users.Add(newUser);
+            }
             // Save changes to commit to db
             await _context.SaveChangesAsync();
             return Ok(resp);
