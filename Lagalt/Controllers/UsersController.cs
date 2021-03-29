@@ -14,6 +14,7 @@ using Lagalt.DTOs;
 using Lagalt.DTOs.Users;
 using Lagalt.DTOs.Projects;
 using Swashbuckle.AspNetCore.Annotations;
+using Lagalt.DTOs.Themes;
 
 namespace Lagalt.Controllers
 {
@@ -167,7 +168,6 @@ namespace Lagalt.Controllers
             return Ok(respons);
         }
 
-        //Get skills for user
         [HttpGet("{userId}/Projects")]
         [SwaggerOperation(
             Summary = "Returns all project for a user",
@@ -180,20 +180,25 @@ namespace Lagalt.Controllers
         {
             // Make response object
             CommonResponse<IEnumerable<ProjectSkillsDto>> respons = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
-            var projectModel = await _context.Projects.Include(p => p.Skills)
-                                                  .Include(p => p.Industry)
-                                                  .Include(p => p.Themes)
-                                                  .ToListAsync();
+            var user = await _context.Users.Include(p => p.Projects).ThenInclude(p => p.Themes).
+                            Include(p => p.Projects).ThenInclude(p => p.Skills).
+                            Include(p => p.Projects).ThenInclude(p => p.Industry).
+                            Where(u => u.UserId == userId).FirstOrDefaultAsync();
 
-            User user = await _context.Users.Include(p => p.Projects).Where(u => u.UserId == userId).FirstOrDefaultAsync();
+            var projectModel = await _context.Projects.Where(p => p.UserId == user.Id)
+                                          .Include(p => p.Skills)
+                                         .Include(p => p.Industry)
+                                         .Include(p => p.Themes)
+                                         .ToListAsync();
+
             if (user == null)
             {
                 respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
                 return NotFound(respons);
             }
-            foreach (Project project in user.Projects)
+            foreach (Project project in projectModel)
             {
-                project.Users = null;
+                user.Projects.Add(project);
             }
             // Map to dto
             respons.Data = _mapper.Map<List<ProjectSkillsDto>>(user.Projects);
