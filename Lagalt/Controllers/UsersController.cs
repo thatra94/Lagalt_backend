@@ -49,8 +49,14 @@ namespace Lagalt.Controllers
             return Ok(respons);
         }
 
-        // GET: api/User/5
         [HttpGet("{userId}")]
+        [SwaggerOperation(
+            Summary = "Returns user based on id from keycloak",
+            Description = "Returns user based on id from keycloak"
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<CommonResponse<UserDto>>> GetUser(string userId)
         {
             // Create response object
@@ -68,6 +74,13 @@ namespace Lagalt.Controllers
         }
         // POST: api/Users
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Creates a new user",
+            Description = "Creates a new user"
+            )]
+        [SwaggerResponse(201, "Created")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<UserDto>>> PostUser(UserCreateDto user)
         {
             // Create response object
@@ -97,9 +110,16 @@ namespace Lagalt.Controllers
             respons.Data = _mapper.Map<UserDto>(userModel);
             return CreatedAtAction("GetUser", new { userId = respons.Data.UserId }, respons);
         }
-
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+             Summary = "Deletes a user",
+            Description = "Deletes a user by id"
+               )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<UserDto>>> DeleteUser(int id)
         {
             CommonResponse<UserDto> respons = new();
@@ -119,8 +139,15 @@ namespace Lagalt.Controllers
         {
             return _context.Users.Any(e => e.UserId == userId);
         }
-        //Get skills for user
+
         [HttpGet("{userId}/Skills")]
+        [SwaggerOperation(
+            Summary = "Returns skills for a user",
+            Description = "Returns skills for a user based on id from keycloak"
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "User not Found")]
         public async Task<ActionResult<CommonResponse<SkillDto>>> GetSkillsInUser(string userId)
         {
             // Make response object
@@ -142,6 +169,13 @@ namespace Lagalt.Controllers
 
         //Get skills for user
         [HttpGet("{userId}/Projects")]
+        [SwaggerOperation(
+            Summary = "Returns all project for a user",
+            Description = "Returns projects for a user based on id from keycloak"
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "User not Found")]
         public async Task<ActionResult<CommonResponse<ProjectSkillsDto>>> GetProjectForUser(string userId)
         {
             // Make response object
@@ -168,8 +202,11 @@ namespace Lagalt.Controllers
 
         [HttpPut("{userId}")]
         [SwaggerOperation(
-            Summary = "Put user, update desctiption, hidden mode and skills on user")]
+            Summary = "Put user: update description, hidden mode and skills for user")]
         [SwaggerResponse(404, "Cannot find an user with that Id")]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<IActionResult> PutUserWithSkills(string userId, UserUpdateDto user)
         {
             // Create response object
@@ -207,7 +244,7 @@ namespace Lagalt.Controllers
             "Post id of user checkout out userId's userprofil. Limit view based on user is hidden" +
             "and check if user is admin or not on any project this userporfil contributes to"
             )]
-        [SwaggerResponse(404, "Cannot find an user with that Id")]
+        [SwaggerResponse(404, "Cannot find a user with that Id")]
         public async Task<ActionResult<CommonResponse<UserProfilDto>>> GetUserProfil(int user, UserIdDto userId)
         {
             // Create response object
@@ -237,7 +274,7 @@ namespace Lagalt.Controllers
 
                     if (project.UserId == userAdmin.Id)
                     {
-                        userModel = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync();
+                        userModel = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync(u => u.Id == user);
                         respons.Data = _mapper.Map<UserProfilDto>(userModel);
                     }
                     else
