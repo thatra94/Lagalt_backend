@@ -15,6 +15,7 @@ using Lagalt.DTOs;
 using Lagalt.DTOs.Themes;
 using System.Text.RegularExpressions;
 using Lagalt.DTOs.Users;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Lagalt.Controllers
 {
@@ -29,7 +30,16 @@ namespace Lagalt.Controllers
             _context = context;
             _mapper = mapper;
         }
+
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Returns all user histories",
+            Description = "Returns all user histories"
+
+            )]
+        [SwaggerResponse(200, "Success")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<CommonResponse<IEnumerable<UserHistoryDto>>>> GetUserHistories()
         {
             // Create response object
@@ -126,40 +136,6 @@ order by C desc;
             resp.Data = _mapper.Map<UserHistoryDto>(l);
 
             return Ok(resp);
-        }
-
-        [HttpPost("{id}")]
-        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectViewDto>>>> GetProjectInProjectView(int id, UserIdDto userId)
-        {
-            CommonResponse<ProjectViewDto> response = new CommonResponse<ProjectViewDto>();
-
-            var projectModel = await _context.Projects.Include(s => s.Skills)
-                                                   .Include(i => i.Industry)
-                                                   .Include(t => t.Themes)
-                                                   .Include(l => l.Links)
-                                                   .FirstOrDefaultAsync(i => i.Id == id);
-
-            if (projectModel == null)
-            {
-                response.Error = new Error { Status = 404, Message = "Cannot find a project with that Id" };
-                return NotFound(response);
-            }
-            //Map to Dto
-            ProjectViewDto project = _mapper.Map<ProjectViewDto>(projectModel);
-            project.IndustryName = project.IndustryName;
-
-            UserHistory userHistory = new UserHistory();
-            userHistory.ProjectId = id;
-            userHistory.TypeHistory = HistoryType.ProjectClickedOn;
-            userHistory.UserId = userId.Id;
-            _context.UserHistories.Add(userHistory);
-
-        // Save changes to commit to db
-          await _context.SaveChangesAsync();
-
-            response.Data = project;
-
-            return Ok(response);
         }
     }
 }

@@ -46,6 +46,13 @@ namespace Lagalt.Controllers
         }
 
         [HttpPut("{id}")]
+        [SwaggerOperation(
+            Summary = "Updates all values for a portfolio",
+            Description = "Updates all values for a portfolio"
+            )]
+        [SwaggerResponse(204, "No Content")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<IActionResult> PutPortfolio(int id, PortfolioDto port)
         {
             // Create response object
@@ -78,18 +85,22 @@ namespace Lagalt.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Creates a new portfolio",
+            Description = "Creates a new portfolio"
+            )]
+        [SwaggerResponse(201, "Created")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<PortfolioDto>>> PostPortfolio(PortfolioCreateDto port)
         {
             // Make CommonResponse object to use
             CommonResponse<PortfolioDto> resp = new CommonResponse<PortfolioDto>();
-
             // Map to model class
             var model = _mapper.Map<Portfolio>(port);
-
             // Add to db
             _context.Portfolios.Add(model);
             await _context.SaveChangesAsync();
-
             var l = await _context.Portfolios.Include(l => l.User).FirstOrDefaultAsync(l => l.Id == model.Id);
             resp.Data = _mapper.Map<PortfolioDto>(l);
 
@@ -98,6 +109,13 @@ namespace Lagalt.Controllers
 
         //Get portfolio for user
         [HttpGet("users/{userId}")]
+        [SwaggerOperation(
+            Summary = "Returns portfolios for a user",
+            Description = "Returns portfolios for a user based on id from keycloak"
+            )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "User not Found")]
         public async Task<ActionResult<CommonResponse<PortfolioDto>>> GetPortfolioforUser(string userId)
         {
             // Make response object

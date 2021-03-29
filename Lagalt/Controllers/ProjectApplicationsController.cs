@@ -28,6 +28,12 @@ namespace Lagalt.Controllers
         }
         // GET: api/ProjectApplications
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Returns all project applications",
+            Description = "Returns all project applications")]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<IEnumerable<CommonResponse<ProjectApplicationDto>>>> GetProjectsApplications()
         {
             CommonResponse<IEnumerable<ProjectApplicationDto>> resp = new CommonResponse<IEnumerable<ProjectApplicationDto>>();
