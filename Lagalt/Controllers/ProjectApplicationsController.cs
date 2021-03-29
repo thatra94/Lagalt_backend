@@ -10,6 +10,7 @@ using Lagalt.Models;
 using Lagalt.DTOs.ProjectApplications;
 using Lagalt.ResponseModel;
 using AutoMapper;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Lagalt.Controllers
 {
@@ -25,7 +26,6 @@ namespace Lagalt.Controllers
             _context = context;
             _mapper = mapper;
         }
-
         // GET: api/ProjectApplications
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CommonResponse<ProjectApplicationDto>>>> GetProjectsApplications()
@@ -41,14 +41,20 @@ namespace Lagalt.Controllers
 
         //Get applications for project
         [HttpGet("{projectId}")]
+        [SwaggerOperation(
+            Summary = "Get all project applications for a spesific project",
+            Description = "Get all project applications with status pending for one project"
+            )]
+        [SwaggerResponse(404, "A project with that id could not be found")]
         public async Task<ActionResult<CommonResponse<ProjectApplicationShort>>> GetApplicationForProject(int projectId)
         {
             // Make response object
             CommonResponse<IEnumerable<ProjectApplicationShort>> respons = new CommonResponse<IEnumerable<ProjectApplicationShort>>();
-            var project = await _context.ProjectApplications.Include(l => l.User).Where(p => p.Project.Id == projectId).ToListAsync(); 
+            var project = await _context.ProjectApplications.Include(l => l.User).Where(p => p.Project.Id == projectId).
+                Where(p => p.Status == "Pending").ToListAsync(); 
             if (project == null)
             {
-                respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
+                respons.Error = new Error { Status = 404, Message = "A project with that id could not be found." };
                 return NotFound(respons);
             }
             // Map to dto
@@ -57,10 +63,25 @@ namespace Lagalt.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Post project application for a spesific project",
+            Description = "Post project application with motivation text for a spesific project, " +
+            "status for project is pending upon post"
+            )]
+        [SwaggerResponse(400, "The post did not pass validation, ensure it is in the correct format")]
         public async Task<ActionResult<CommonResponse<ProjectApplicationDto>>> PostProjectApplication(ProjectApplicationCreateDto post)
         {
             // Make CommonResponse object to use
             CommonResponse<ProjectApplicationDto> resp = new CommonResponse<ProjectApplicationDto>();
+            if (!ModelState.IsValid)
+            {
+                resp.Error = new Error
+                {
+                    Status = 400,
+                    Message = "The post did not pass validation, ensure it is in the correct format."
+                };
+                return BadRequest(resp);
+            }
             var model = _mapper.Map<ProjectApplication>(post);
             model.Status = "Pending";
             // Add to db
@@ -74,6 +95,11 @@ namespace Lagalt.Controllers
         }
 
        [HttpPut]
+        [SwaggerOperation(
+            Summary = "Update status for one project application, link it to user",
+            Description = "Put project to user when application is approved, and set status approved to projectApplications"
+            )]
+        [SwaggerResponse(400, "The process did not pass validation, ensure it is in the correct format")]
         public async Task<IActionResult> PutProjectToUser(ProjectAppResponsDto post)
         {
             // Make CommonResponse object to use
@@ -91,8 +117,11 @@ namespace Lagalt.Controllers
             return Ok(resp);
         }
 
-        // DELETE: api/ProjectApplications/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Deletes project application with spesific id"
+            )]
+        [SwaggerResponse(404, "Could not find a project application with spesific id")]
         public async Task<IActionResult> DeleteProjectApplication(int id)
         {
             var projectApplication = await _context.ProjectApplications.FindAsync(id);
@@ -105,7 +134,6 @@ namespace Lagalt.Controllers
 
             return NoContent();
         }
-
         private bool ProjectApplicationExists(int id)
         {
             return _context.ProjectApplications.Any(e => e.Id == id);

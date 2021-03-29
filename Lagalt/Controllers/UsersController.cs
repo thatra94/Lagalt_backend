@@ -13,6 +13,7 @@ using Lagalt.ResponseModel;
 using Lagalt.DTOs;
 using Lagalt.DTOs.Users;
 using Lagalt.DTOs.Projects;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Lagalt.Controllers
 {
@@ -30,6 +31,12 @@ namespace Lagalt.Controllers
         }
         // GET: api/Users
         [HttpGet]
+       [SwaggerOperation(
+            Summary = "Returns all users",
+            Description = "Returns all users")]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "Not Found")]
         public async Task<ActionResult<CommonResponse<IEnumerable<UserDto>>>> GetUsers()
         {
             // Create response object
@@ -160,6 +167,9 @@ namespace Lagalt.Controllers
         }
 
         [HttpPut("{userId}")]
+        [SwaggerOperation(
+            Summary = "Put user, update desctiption, hidden mode and skills on user")]
+        [SwaggerResponse(404, "Cannot find an user with that Id")]
         public async Task<IActionResult> PutUserWithSkills(string userId, UserUpdateDto user)
         {
             // Create response object
@@ -189,8 +199,15 @@ namespace Lagalt.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
-        // GET: api/User/5/UserProfil/UserId
+        
         [HttpPost("{user}")]
+        [SwaggerOperation(
+            Summary = "Post user profil by id including skills, projects and portfolio",
+            Description = "Post user profil by id including skills, projects and portfolio," +
+            "Post id of user checkout out userId's userprofil. Limit view based on user is hidden" +
+            "and check if user is admin or not on any project this userporfil contributes to"
+            )]
+        [SwaggerResponse(404, "Cannot find an user with that Id")]
         public async Task<ActionResult<CommonResponse<UserProfilDto>>> GetUserProfil(int user, UserIdDto userId)
         {
             // Create response object
@@ -202,11 +219,11 @@ namespace Lagalt.Controllers
 
             var userModel = await _context.Users.
                                     Include(p => p.Projects).
-                                    Include(p => p.Portofolios).
-                                    Where(u => u.Id == user).FirstOrDefaultAsync();
+                                    Include(p => p.Portofolios)
+                                    .FirstOrDefaultAsync(u => u.Id == user);
             if(userModel.Hidden == false)
             {
-                userModel = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync();
+                userModel = await _context.Users.Include(s => s.Skills).FirstOrDefaultAsync(u => u.Id == user);
                 respons.Data = _mapper.Map<UserProfilDto>(userModel);
             }
     
