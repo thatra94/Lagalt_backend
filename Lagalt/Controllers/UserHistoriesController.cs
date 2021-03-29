@@ -52,6 +52,7 @@ namespace Lagalt.Controllers
             respons.Data = users;
             return Ok(respons);
         }
+
         [HttpGet("/project/{userId}")]
         public async Task<ActionResult<IEnumerable<CommonResponse<ProjectSkillsDto>>>> GetProjectsWithSkills(int userId)
         {
@@ -63,24 +64,24 @@ namespace Lagalt.Controllers
 
                }).OrderByDescending(u => u.UserId).FirstOrDefaultAsync();
 
-            var whichP = await _context.Projects.Where(p => p.Id == uh.ProjectId).Include(p => p.IndustryId).FirstAsync();
+            var an = await _context.Themes.FromSqlRaw("Select t.Name, t.Id FROM Themes AS t, ProjectTheme as pt, Projects as p WHERE p.Id = {0} AND p.Id = pt.ProjectsId AND pt.ThemesId = t.Id", uh.ProjectId).ToListAsync();
 
-            var an = await _context.Themes.Include(p => p.Projects.Where(p => p.Id == uh.ProjectId)).FirstAsync();
-            
+            var whichP = await _context.Projects.Include(p => p.Themes).Where(p => p.Id == uh.ProjectId).FirstAsync();
             // Make CommonResponse object to use
             CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
-            var projectModel = await _context.Projects.Where(p => p.Id == whichP.Id)
-                                                       .Include(p => p.Skills)
+            var projectModel = await _context.Projects.Include(p => p.Skills)
                                                       .Include(p => p.Industry)
-                                                      .Include(p => p.Themes).FirstOrDefaultAsync();
-         
+                                                       .Include(p => p.Themes)
+                                                       .OrderByDescending(t => t.Themes.FirstOrDefault().Name == an.FirstOrDefault().Name)
+                                                      .ToListAsync();
+
             // Map skills and industry
             List<ProjectSkillsDto> projects = _mapper.Map<List<ProjectSkillsDto>>(projectModel);
             foreach (ProjectSkillsDto project in projects)
             {
                 project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
                 project.Themes = _mapper.Map<List<ThemeDto>>(project.Themes);
-               project.IndustryName = project.IndustryName;
+                project.IndustryName = project.IndustryName;
             }
             // Return data
             response.Data = projects;
@@ -88,7 +89,7 @@ namespace Lagalt.Controllers
         }
 
         //Get history for user
-        [HttpGet("{userId}")]
+       [HttpGet("{userId}/userid")]
         public async Task<ActionResult<CommonResponse<UserHistoryDto>>> GetUserHistoryForUser(int userId)
         {
 
@@ -109,6 +110,13 @@ order by C desc;
                     UserId = g.Count()
                     
                 }).OrderByDescending(u => u.UserId).FirstOrDefaultAsync();
+
+            var an = await _context.Themes.FromSqlRaw("Select t.Name, t.Id FROM Themes AS t, ProjectTheme as pt, Projects as p WHERE p.Id = 11 AND p.Id = pt.ProjectsId AND pt.ThemesId = t.Id").FirstOrDefaultAsync();
+           // an.Id = uh.Id;
+
+            //Where(array => array.Any()).Select(array => array.First());
+            // var an = await _context.Themes.Include(p => p.Projects).FirstAsync(p => p.);
+            //   uh.Id = an.Id;
 
             if (uh == null)
             {
