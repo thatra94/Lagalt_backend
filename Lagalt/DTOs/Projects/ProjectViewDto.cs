@@ -17,6 +17,8 @@ namespace Lagalt.DTOs.Projects
         public string ImageUrl { get; set; }
         public string Status { get; set; }  // ("Opprettet", "Under utvikling", "På vent", "Ferdig")
         public string IndustryName { get; set; }
+        public int IndustryId { get; set; }
+
         public string UserName { get; set; }
         // Foreign keys
         public int UserId { get; set; } // Creator <-> Admin
