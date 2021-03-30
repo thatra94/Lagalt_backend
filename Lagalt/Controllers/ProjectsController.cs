@@ -391,6 +391,7 @@ namespace Lagalt.Controllers
                                                    .Include(i => i.Industry)
                                                    .Include(t => t.Themes)
                                                    .Include(l => l.Links)
+                                                   .Include(u => u.Users)
                                                    .FirstOrDefaultAsync(i => i.Id == id);
 
             if (projectModel == null)
@@ -400,6 +401,9 @@ namespace Lagalt.Controllers
             }
             //Map to Dto
             ProjectViewDto project = _mapper.Map<ProjectViewDto>(projectModel);
+            // Get username to display creator name in response
+            var user = await _context.Users.Where(u => u.Id == project.UserId).FirstAsync();
+            project.UserName = user.Name;
             project.IndustryName = project.IndustryName;
 
             if (userId.Id != 0)
