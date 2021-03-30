@@ -402,12 +402,13 @@ namespace Lagalt.Controllers
             ProjectViewDto project = _mapper.Map<ProjectViewDto>(projectModel);
             project.IndustryName = project.IndustryName;
 
-            UserHistory userHistory = new UserHistory();
-            userHistory.ProjectId = id;
-            userHistory.TypeHistory = HistoryType.ProjectClickedOn;
-            userHistory.UserId = userId.Id;
-            _context.UserHistories.Add(userHistory);
-
+            if (userId.Id != 0)
+               { UserHistory userHistory = new UserHistory();
+                userHistory.ProjectId = id;
+                userHistory.TypeHistory = HistoryType.ProjectClickedOn;
+                userHistory.UserId = userId.Id;
+                _context.UserHistories.Add(userHistory);
+            }
             // Save changes to commit to db
             await _context.SaveChangesAsync();
             response.Data = project;
