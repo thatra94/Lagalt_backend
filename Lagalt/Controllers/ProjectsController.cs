@@ -236,7 +236,7 @@ namespace Lagalt.Controllers
         // POST: api/Projects 
         // Post New project
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("new")]
         [SwaggerOperation(
             Summary = "Creates a new project",
             Description = "Creates a new project"
@@ -414,7 +414,7 @@ namespace Lagalt.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{userId}")]
+        [HttpPost]
         [SwaggerOperation(
          Summary = "Get projects in order based on user's userhistory",
           Description = "Order prosject based on user history, projects are order by the theme the " +
@@ -423,9 +423,9 @@ namespace Lagalt.Controllers
         [SwaggerResponse(200, "OK")]
         [SwaggerResponse(400, "Bad Request")]
         [SwaggerResponse(404, "User not Found")]
-        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectSkillsDto>>>> GetProjectsWithSkills(int userId)
+        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectSkillsDto>>>> GetProjectsWithSkills(UserIdDto userId)
         {
-            var uh = await _context.UserHistories.Where(u => u.UserId == userId).
+            var uh = await _context.UserHistories.Where(u => u.UserId == userId.Id).
                GroupBy(p => p.ProjectId).Select(g => new UserHistory
                {
                    ProjectId = g.Key,
