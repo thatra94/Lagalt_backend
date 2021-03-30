@@ -43,7 +43,7 @@ namespace Lagalt.Controllers
             // Create response object
             CommonResponse<IEnumerable<UserHistoryDto>> respons = new CommonResponse<IEnumerable<UserHistoryDto>>();
             // Fetch list of model class and map to dto
-            var modelUser = await _context.UserHistories.GroupBy(p => p.ProjectId).ToListAsync();
+            var modelUser = await _context.UserHistories.ToListAsync();
 
             List<UserHistoryDto> users = _mapper.Map<List<UserHistoryDto>>(modelUser);
             // Return the data
