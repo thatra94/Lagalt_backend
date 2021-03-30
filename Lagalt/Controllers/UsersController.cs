@@ -168,6 +168,7 @@ namespace Lagalt.Controllers
             return Ok(respons);
         }
 
+        [Authorize]
         [HttpGet("{userId}/Projects")]
         [SwaggerOperation(
             Summary = "Returns all project for a user",

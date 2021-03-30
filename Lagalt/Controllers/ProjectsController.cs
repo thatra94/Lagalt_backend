@@ -413,5 +413,67 @@ namespace Lagalt.Controllers
             response.Data = project;
             return Ok(response);
         }
+
+        [HttpGet("{userId}")]
+        [SwaggerOperation(
+         Summary = "Get projects in order based on user's userhistory",
+          Description = "Order prosject based on user history, projects are order by the theme the " +
+             "user interacts with most and then descending"
+         )]
+        [SwaggerResponse(200, "OK")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "User not Found")]
+        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectSkillsDto>>>> GetProjectsWithSkills(int userId)
+        {
+            var uh = await _context.UserHistories.Where(u => u.UserId == userId).
+               GroupBy(p => p.ProjectId).Select(g => new UserHistory
+               {
+                   ProjectId = g.Key,
+                   UserId = g.Count()
+
+               }).OrderByDescending(u => u.UserId).FirstOrDefaultAsync();
+            // Make CommonResponse object to use
+            CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
+            if (uh != null)
+            {
+                var an = await _context.Themes.FromSqlRaw("Select t.Name, t.Id FROM Themes AS t, ProjectTheme as pt, Projects as p WHERE p.Id = {0} AND p.Id = pt.ProjectsId AND pt.ThemesId = t.Id", uh.ProjectId).ToListAsync();
+
+                var projectModel = await _context.Projects.Include(p => p.Skills)
+                                       .Include(p => p.Industry)
+                                        .Include(p => p.Themes)
+                                        .OrderByDescending(t => t.Themes.FirstOrDefault().Name == an.FirstOrDefault().Name)
+                                       .ToListAsync();
+
+                List<ProjectSkillsDto> projects = _mapper.Map<List<ProjectSkillsDto>>(projectModel);
+                // Map skills and industry
+                foreach (ProjectSkillsDto project in projects)
+                {
+                    project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
+                    project.Themes = _mapper.Map<List<ThemeDto>>(project.Themes);
+                    project.IndustryName = project.IndustryName;
+                }
+                // Return data
+                response.Data = projects;
+            }
+            else
+            {
+                var projectModel = await _context.Projects.Include(p => p.Skills)
+                                         .Include(p => p.Industry)
+                                          .Include(p => p.Themes)
+                                         .ToListAsync();
+
+                List<ProjectSkillsDto> projects = _mapper.Map<List<ProjectSkillsDto>>(projectModel);
+                // Map skills and industry
+                foreach (ProjectSkillsDto project in projects)
+                {
+                    project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
+                    project.Themes = _mapper.Map<List<ThemeDto>>(project.Themes);
+                    project.IndustryName = project.IndustryName;
+                }
+                // Return data
+                response.Data = projects;
+            }
+            return Ok(response);
+        }
     }
 }
