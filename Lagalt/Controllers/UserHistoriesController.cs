@@ -34,9 +34,7 @@ namespace Lagalt.Controllers
         [HttpGet]
         [SwaggerOperation(
             Summary = "Returns all user histories",
-            Description = "Returns all user histories"
-
-            )]
+            Description = "Returns all user histories" )]
         [SwaggerResponse(200, "Success")]
         [SwaggerResponse(400, "Bad Request")]
         [SwaggerResponse(404, "Not Found")]
@@ -52,56 +50,17 @@ namespace Lagalt.Controllers
             respons.Data = users;
             return Ok(respons);
         }
-
-        [HttpGet("/project/{userId}")]
-        public async Task<ActionResult<IEnumerable<CommonResponse<ProjectSkillsDto>>>> GetProjectsWithSkills(int userId)
-        {
-            var uh = await _context.UserHistories.Where(u => u.UserId == userId).
-               GroupBy(p => p.ProjectId).Select(g => new UserHistory
-               {
-                   ProjectId = g.Key,
-                   UserId = g.Count()
-
-               }).OrderByDescending(u => u.UserId).FirstOrDefaultAsync();
-
-            var an = await _context.Themes.FromSqlRaw("Select t.Name, t.Id FROM Themes AS t, ProjectTheme as pt, Projects as p WHERE p.Id = {0} AND p.Id = pt.ProjectsId AND pt.ThemesId = t.Id", uh.ProjectId).ToListAsync();
-
-            var whichP = await _context.Projects.Include(p => p.Themes).Where(p => p.Id == uh.ProjectId).FirstAsync();
-            // Make CommonResponse object to use
-            CommonResponse<IEnumerable<ProjectSkillsDto>> response = new CommonResponse<IEnumerable<ProjectSkillsDto>>();
-            var projectModel = await _context.Projects.Include(p => p.Skills)
-                                                      .Include(p => p.Industry)
-                                                       .Include(p => p.Themes)
-                                                       .OrderByDescending(t => t.Themes.FirstOrDefault().Name == an.FirstOrDefault().Name)
-                                                      .ToListAsync();
-
-            // Map skills and industry
-            List<ProjectSkillsDto> projects = _mapper.Map<List<ProjectSkillsDto>>(projectModel);
-            foreach (ProjectSkillsDto project in projects)
-            {
-                project.Skills = _mapper.Map<List<SkillDto>>(project.Skills);
-                project.Themes = _mapper.Map<List<ThemeDto>>(project.Themes);
-                project.IndustryName = project.IndustryName;
-            }
-            // Return data
-            response.Data = projects;
-            return Ok(response);
-        }
-
-        //Get history for user
-       [HttpGet("{userId}/userid")]
+  
+        [HttpGet("{userId}")]
+        [SwaggerOperation(
+            Summary = "Returns user histories by user Id",
+            Description = "Returns user histories by user Id")]
+        [SwaggerResponse(200, "Success")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(404, "User history for user not Found")]
         public async Task<ActionResult<CommonResponse<UserHistoryDto>>> GetUserHistoryForUser(int userId)
         {
-
-            // Make response object
             CommonResponse<UserHistoryDto> respons = new CommonResponse<UserHistoryDto>();
-
-            /*
-            SELECT TOP 1 ProjectId, count(*) as C
-FROM UserHistories
-group by ProjectId
-order by C desc;
-            */
 
             var uh = await _context.UserHistories.Where(u => u.UserId == userId).
                 GroupBy(p => p.ProjectId).Select(g => new UserHistory
@@ -110,14 +69,7 @@ order by C desc;
                     UserId = g.Count()
                     
                 }).OrderByDescending(u => u.UserId).FirstOrDefaultAsync();
-
-            var an = await _context.Themes.FromSqlRaw("Select t.Name, t.Id FROM Themes AS t, ProjectTheme as pt, Projects as p WHERE p.Id = 11 AND p.Id = pt.ProjectsId AND pt.ThemesId = t.Id").FirstOrDefaultAsync();
-           // an.Id = uh.Id;
-
-            //Where(array => array.Any()).Select(array => array.First());
-            // var an = await _context.Themes.Include(p => p.Projects).FirstAsync(p => p.);
-            //   uh.Id = an.Id;
-
+   
             if (uh == null)
             {
                 respons.Error = new Error { Status = 404, Message = "A user with that id could not be found." };
@@ -130,6 +82,13 @@ order by C desc;
 
         //post history to user
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Creates a new user history",
+            Description = "Creates a new user history"
+            )]
+        [SwaggerResponse(201, "Created")]
+        [SwaggerResponse(400, "Bad Request")]
+        [SwaggerResponse(405, "Not Allowed")]
         public async Task<ActionResult<CommonResponse<UserHistoryDto>>> PostHistory(UserHistoryCreateDto history)
         {
             // Make CommonResponse object to use
